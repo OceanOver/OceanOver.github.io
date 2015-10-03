@@ -5,33 +5,21 @@
   
   <title>NSString内存相关特性strong、copy | 0&#39;Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="在声明一个NSString属性时，对于其内存相关特性，通常有两种选择( 基于ARC环境 )：strong与copy。大部分的时候NSString的属性都是copy，那copy与strong的情况下到底有什么区别呢？
-示例
-我们定义一个类，并为其声明两个字符串属性，如下所示：
-@property (nonatomic, strong) NSString *strongString;
-@propert">
+  <meta name="description" content="在声明一个NSString属性时，对于其内存相关特性，通常有两种选择( 基于ARC环境 )：strong与copy。大部分的时候NSString的属性都是copy，那copy与strong的情况下到底有什么区别呢？">
 <meta property="og:type" content="article">
 <meta property="og:title" content="NSString内存相关特性strong、copy">
 <meta property="og:url" content="http://yoursite.com/2015/09/20/NSString内存相关特性strong、copy/index.html">
 <meta property="og:site_name" content="0'Blog">
-<meta property="og:description" content="在声明一个NSString属性时，对于其内存相关特性，通常有两种选择( 基于ARC环境 )：strong与copy。大部分的时候NSString的属性都是copy，那copy与strong的情况下到底有什么区别呢？
-示例
-我们定义一个类，并为其声明两个字符串属性，如下所示：
-@property (nonatomic, strong) NSString *strongString;
-@propert">
-<meta property="og:updated_time" content="2015-09-23T14:46:20.000Z">
+<meta property="og:description" content="在声明一个NSString属性时，对于其内存相关特性，通常有两种选择( 基于ARC环境 )：strong与copy。大部分的时候NSString的属性都是copy，那copy与strong的情况下到底有什么区别呢？">
+<meta property="og:updated_time" content="2015-10-03T06:51:30.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="NSString内存相关特性strong、copy">
-<meta name="twitter:description" content="在声明一个NSString属性时，对于其内存相关特性，通常有两种选择( 基于ARC环境 )：strong与copy。大部分的时候NSString的属性都是copy，那copy与strong的情况下到底有什么区别呢？
-示例
-我们定义一个类，并为其声明两个字符串属性，如下所示：
-@property (nonatomic, strong) NSString *strongString;
-@propert">
+<meta name="twitter:description" content="在声明一个NSString属性时，对于其内存相关特性，通常有两种选择( 基于ARC环境 )：strong与copy。大部分的时候NSString的属性都是copy，那copy与strong的情况下到底有什么区别呢？">
   
     <link rel="alternative" href="/atom.xml" title="0&#39;Blog" type="application/atom+xml">
   
   
-    <link rel="icon" href="/favicon.png">
+    <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" href="/css/style.css" type="text/css">
 </head>
@@ -43,7 +31,7 @@
 	<header id="header" class="inner">
 		<a href="/" class="profilepic">
 			
-			<img lazy-src="null" class="js-avatar">
+			<img lazy-src="/yt.jpg" class="js-avatar">
 			
 		</a>
 
@@ -157,7 +145,7 @@
 	<div class="intrude-less">
 		<header id="header" class="inner">
 			<div class="profilepic">
-				<img lazy-src="null" class="js-avatar">
+				<img lazy-src="/yt.jpg" class="js-avatar">
 			</div>
 			<hgroup>
 			  <h1 class="header-author">YT</h1>
@@ -218,7 +206,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>在声明一个NSString属性时，对于其内存相关特性，通常有两种选择( <strong>基于ARC环境</strong> )：strong与copy。大部分的时候NSString的属性都是copy，那copy与strong的情况下到底有什么区别呢？</p>
+        <p>在声明一个NSString属性时，对于其内存相关特性，通常有两种选择( <strong>基于ARC环境</strong> )：strong与copy。大部分的时候NSString的属性都是copy，那copy与strong的情况下到底有什么区别呢？<a id="more"></a></p>
 <p><code>示例</code></p>
 <p>我们定义一个类，并为其声明两个字符串属性，如下所示：</p>
 <pre><code><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSString</span> *strongString;
@@ -287,11 +275,11 @@ copyedString:<span class="number">0x7473657445</span> <span class="number">0x100
     
 <nav id="article-nav">
   
-    <a href="/2015/09/20/hello-world/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2015/09/28/动画基础之CALayer/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption"><</strong>
       <div class="article-nav-title">
         
-          Hello World
+          动画基础之CALayer
         
       </div>
     </a>

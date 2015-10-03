@@ -11,7 +11,7 @@
 <meta property="og:url" content="http://yoursite.com/2015/09/29/block的一些基础/index.html">
 <meta property="og:site_name" content="0'Blog">
 <meta property="og:description" content="在异步编程时我们经常进行函数回调，由于函数调用是异步执行的，我们如果想让一个操作执行完之后执行另一个函数，则无法按照正常代码书写顺序进行编程，因为我们无法获知前一个方法什么时候执行结束，此时我们经常会用到委托或者代码块（Block）。Block就是一个函数体（匿名函数），它是ObjC对于闭包的实现，在块状中我们可以持有或引用局部变量，同时利用Block你可以将一个操作作为一个参数进行传递（是不是想">
-<meta property="og:updated_time" content="2015-10-01T03:16:49.000Z">
+<meta property="og:updated_time" content="2015-10-03T06:51:01.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="block的一些基础">
 <meta name="twitter:description" content="在异步编程时我们经常进行函数回调，由于函数调用是异步执行的，我们如果想让一个操作执行完之后执行另一个函数，则无法按照正常代码书写顺序进行编程，因为我们无法获知前一个方法什么时候执行结束，此时我们经常会用到委托或者代码块（Block）。Block就是一个函数体（匿名函数），它是ObjC对于闭包的实现，在块状中我们可以持有或引用局部变量，同时利用Block你可以将一个操作作为一个参数进行传递（是不是想">
@@ -19,7 +19,7 @@
     <link rel="alternative" href="/atom.xml" title="0&#39;Blog" type="application/atom+xml">
   
   
-    <link rel="icon" href="/favicon.png">
+    <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" href="/css/style.css" type="text/css">
 </head>
@@ -31,7 +31,7 @@
 	<header id="header" class="inner">
 		<a href="/" class="profilepic">
 			
-			<img lazy-src="null" class="js-avatar">
+			<img lazy-src="/yt.jpg" class="js-avatar">
 			
 		</a>
 
@@ -145,7 +145,7 @@
 	<div class="intrude-less">
 		<header id="header" class="inner">
 			<div class="profilepic">
-				<img lazy-src="null" class="js-avatar">
+				<img lazy-src="/yt.jpg" class="js-avatar">
 			</div>
 			<hgroup>
 			  <h1 class="header-author">YT</h1>
@@ -206,7 +206,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>在异步编程时我们经常进行函数回调，由于函数调用是异步执行的，我们如果想让一个操作执行完之后执行另一个函数，则无法按照正常代码书写顺序进行编程，因为我们无法获知前一个方法什么时候执行结束，此时我们经常会用到委托或者代码块（Block）。Block就是一个函数体（匿名函数），它是ObjC对于闭包的实现，在块状中我们可以持有或引用局部变量，同时利用Block你可以将一个操作作为一个参数进行传递（是不是想起了C语言中的函数指针）。</p>
+        <p>在异步编程时我们经常进行函数回调，由于函数调用是异步执行的，我们如果想让一个操作执行完之后执行另一个函数，则无法按照正常代码书写顺序进行编程，因为我们无法获知前一个方法什么时候执行结束，此时我们经常会用到委托或者代码块（Block）。Block就是一个函数体（匿名函数），它是ObjC对于闭包的实现，在块状中我们可以持有或引用局部变量，同时利用Block你可以将一个操作作为一个参数进行传递（是不是想起了C语言中的函数指针）。<a id="more"></a></p>
 <h3 id="block定义">block定义</h3><ol>
 <li>Block类型定义：<font color="#EF4700"><strong>返回值类型(^ 变量名)(参数列表)</strong></font>（注意Block也是一种类型）；</li>
 <li>Block的typedef定义：<font color="#EF4700"><strong>返回值类型(^类型名称)(参数列表)</strong></font>；</li>

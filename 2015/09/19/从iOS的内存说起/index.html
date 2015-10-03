@@ -5,40 +5,22 @@
   
   <title>从iOS的内存说起 | 0&#39;Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="当启动一个app当启动一个app程序，系统会把开启的那个app程序从ROM里面拷贝到内存（RAM）RAM的访问速度要远高内存卡(Flash)或ROM，然后从内存里面执行。
-内存分区:可以分为5个区
-栈区（stack）— 这个一般由编译器操作，会存一些局部变量，函数跳转地址，现场保护等等
-
-堆区（heap） — 一般由程序员管理，比如alloc申请内存
-
-全局区（静态区）（static）—，全局变量">
+  <meta name="description" content="当启动一个app当启动一个app程序，系统会把开启的那个app程序从ROM里面拷贝到内存（RAM）RAM的访问速度要远高内存卡(Flash)或ROM，然后从内存里面执行。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="从iOS的内存说起">
 <meta property="og:url" content="http://yoursite.com/2015/09/19/从iOS的内存说起/index.html">
 <meta property="og:site_name" content="0'Blog">
-<meta property="og:description" content="当启动一个app当启动一个app程序，系统会把开启的那个app程序从ROM里面拷贝到内存（RAM）RAM的访问速度要远高内存卡(Flash)或ROM，然后从内存里面执行。
-内存分区:可以分为5个区
-栈区（stack）— 这个一般由编译器操作，会存一些局部变量，函数跳转地址，现场保护等等
-
-堆区（heap） — 一般由程序员管理，比如alloc申请内存
-
-全局区（静态区）（static）—，全局变量">
-<meta property="og:image" content="http://yoursite.com/../memery.png">
-<meta property="og:updated_time" content="2015-09-23T14:50:39.000Z">
+<meta property="og:description" content="当启动一个app当启动一个app程序，系统会把开启的那个app程序从ROM里面拷贝到内存（RAM）RAM的访问速度要远高内存卡(Flash)或ROM，然后从内存里面执行。">
+<meta property="og:image" content="http://yoursite.com/memery.png">
+<meta property="og:updated_time" content="2015-10-03T06:46:46.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="从iOS的内存说起">
-<meta name="twitter:description" content="当启动一个app当启动一个app程序，系统会把开启的那个app程序从ROM里面拷贝到内存（RAM）RAM的访问速度要远高内存卡(Flash)或ROM，然后从内存里面执行。
-内存分区:可以分为5个区
-栈区（stack）— 这个一般由编译器操作，会存一些局部变量，函数跳转地址，现场保护等等
-
-堆区（heap） — 一般由程序员管理，比如alloc申请内存
-
-全局区（静态区）（static）—，全局变量">
+<meta name="twitter:description" content="当启动一个app当启动一个app程序，系统会把开启的那个app程序从ROM里面拷贝到内存（RAM）RAM的访问速度要远高内存卡(Flash)或ROM，然后从内存里面执行。">
   
     <link rel="alternative" href="/atom.xml" title="0&#39;Blog" type="application/atom+xml">
   
   
-    <link rel="icon" href="/favicon.png">
+    <link rel="icon" href="/favicon.ico">
   
   <link rel="stylesheet" href="/css/style.css" type="text/css">
 </head>
@@ -50,7 +32,7 @@
 	<header id="header" class="inner">
 		<a href="/" class="profilepic">
 			
-			<img lazy-src="null" class="js-avatar">
+			<img lazy-src="/yt.jpg" class="js-avatar">
 			
 		</a>
 
@@ -164,7 +146,7 @@
 	<div class="intrude-less">
 		<header id="header" class="inner">
 			<div class="profilepic">
-				<img lazy-src="null" class="js-avatar">
+				<img lazy-src="/yt.jpg" class="js-avatar">
 			</div>
 			<hgroup>
 			  <h1 class="header-author">YT</h1>
@@ -225,7 +207,7 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="当启动一个app">当启动一个app</h3><p>当启动一个app程序，系统会把开启的那个app程序从ROM里面拷贝到内存（RAM）<em><code>RAM的访问速度要远高内存卡(Flash)或ROM</code></em>，然后从内存里面执行。</p>
+        <h3 id="当启动一个app">当启动一个app</h3><p>当启动一个app程序，系统会把开启的那个app程序从ROM里面拷贝到内存（RAM）<em><code>RAM的访问速度要远高内存卡(Flash)或ROM</code></em>，然后从内存里面执行。<a id="more"></a></p>
 <h2 id="内存分区:可以分为5个区">内存分区:可以分为5个区</h2><ul>
 <li><p><strong>栈区</strong>（stack）— 这个一般由编译器操作，会存一些局部变量，函数跳转地址，现场保护等等</p>
 </li>
@@ -241,7 +223,7 @@
 <h3 id="编程中内存相关">编程中内存相关</h3><font color="#E95044">当一个app启动后，代码区，常量区，全局区大小已固定，因此指向这些区的指针不会产生崩溃性的错误。而堆区和栈区是时时刻刻变化的（堆的创建销毁，栈的弹入弹出），所以当使用一个指针指向这两个区里面的内存时，一定要注意内存是否已经被释放，否则会产生程序崩溃（编程中很常见）。</font>
 
 
-<h3 id="参考图">参考图</h3><p><img src="../memery.png" alt=""></p>
+<h3 id="参考图">参考图</h3><p><img src="/memery.png" alt=""></p>
 
       
     </div>
