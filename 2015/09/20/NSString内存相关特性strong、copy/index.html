@@ -21,7 +21,7 @@
   
     <link rel="icon" href="/favicon.ico">
   
-  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
   <div id="container">
@@ -98,9 +98,9 @@
 					<nav class="header-nav">
 						<div class="social">
 							
-								<a class="github" target="_blank" href="/#" title="github">github</a>
+								<a class="github" target="_blank" href="https://github.com/OceanOver" title="github">github</a>
 					        
-								<a class="rss" target="_blank" href="/#" title="rss">rss</a>
+								<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
 					        
 						</div>
 					</nav>
@@ -164,9 +164,9 @@
 			<nav class="header-nav">
 				<div class="social">
 					
-						<a class="github" target="_blank" href="/#" title="github">github</a>
+						<a class="github" target="_blank" href="https://github.com/OceanOver" title="github">github</a>
 			        
-						<a class="rss" target="_blank" href="/#" title="rss">rss</a>
+						<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
 			        
 				</div>
 			</nav>
@@ -213,54 +213,54 @@
         <p>在声明一个NSString属性时，对于其内存相关特性，通常有两种选择( <strong>基于ARC环境</strong> )：strong与copy。大部分的时候NSString的属性都是copy，那copy与strong的情况下到底有什么区别呢？<a id="more"></a></p>
 <p><code>示例</code></p>
 <p>我们定义一个类，并为其声明两个字符串属性，如下所示：</p>
-<pre><code><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>) <span class="built_in">NSString</span> *strongString;
-<span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">copy</span>) <span class="built_in">NSString</span> *copyedString;
+<pre><code>@property (nonatomic, strong) NSString *strongString;
+@property (nonatomic, copy) NSString *copyedString;
 </code></pre><p>上面的代码声明了两个字符串属性，其中一个内存特性是strong，一个是copy。下面我们来看看它们的区别。</p>
 <p>首先，我们用一个不可变字符串来为这两个属性赋值，</p>
-<pre><code>- (<span class="keyword">void</span>)stringTest {
-    NSString *<span class="built_in">string</span> = [NSString stringWithFormat:@<span class="string">"test"</span>];
-    self.strongString = <span class="built_in">string</span>;
-    self.copyedString = <span class="built_in">string</span>;
-    NSLog(@<span class="string">"原字符串:%p %p %@"</span>,<span class="built_in">string</span>,&amp;<span class="built_in">string</span>,<span class="built_in">string</span>);
-    NSLog(@<span class="string">"strongString:%p %p %@"</span>,_strongString,&amp;_strongString,_strongString);
-    NSLog(@<span class="string">"copyedString:%p %p %@"</span>,_copyedString,&amp;_copyedString,_copyedString);
-    <span class="comment">//改变string</span>
-    <span class="built_in">string</span> = @<span class="string">"123"</span>;
-    NSLog(@<span class="string">"原字符串:%p %p %@"</span>,<span class="built_in">string</span>,&amp;<span class="built_in">string</span>,<span class="built_in">string</span>);
-    NSLog(@<span class="string">"strongString:%p %p %@"</span>,_strongString,&amp;_strongString,_strongString);
-    NSLog(@<span class="string">"copyedString:%p %p %@"</span>,_copyedString,&amp;_copyedString,_copyedString);
+<pre><code>- (void)stringTest {
+    NSString *string = [NSString stringWithFormat:@&quot;test&quot;];
+    self.strongString = string;
+    self.copyedString = string;
+    NSLog(@&quot;原字符串:%p %p %@&quot;,string,&amp;string,string);
+    NSLog(@&quot;strongString:%p %p %@&quot;,_strongString,&amp;_strongString,_strongString);
+    NSLog(@&quot;copyedString:%p %p %@&quot;,_copyedString,&amp;_copyedString,_copyedString);
+    //改变string
+    string = @&quot;123&quot;;
+    NSLog(@&quot;原字符串:%p %p %@&quot;,string,&amp;string,string);
+    NSLog(@&quot;strongString:%p %p %@&quot;,_strongString,&amp;_strongString,_strongString);
+    NSLog(@&quot;copyedString:%p %p %@&quot;,_copyedString,&amp;_copyedString,_copyedString);
 }
 </code></pre><p>其输出结果是：</p>
-<pre><code>原字符串:<span class="number">0x7473657445</span> <span class="number">0x7fff5fbff7d8</span> test
-strongString:<span class="number">0x7473657445</span> <span class="number">0x100206d78</span> test
-copyedString:<span class="number">0x7473657445</span> <span class="number">0x100206d80</span> test
+<pre><code>原字符串:0x7473657445 0x7fff5fbff7d8 test
+strongString:0x7473657445 0x100206d78 test
+copyedString:0x7473657445 0x100206d80 test
 
-原字符串:<span class="number">0x100005260</span> <span class="number">0x7fff5fbff7d8</span> <span class="number">123</span>
-strongString:<span class="number">0x7473657445</span> <span class="number">0x100206d78</span> test
-copyedString:<span class="number">0x7473657445</span> <span class="number">0x100206d80</span> test                        
+原字符串:0x100005260 0x7fff5fbff7d8 123
+strongString:0x7473657445 0x100206d78 test
+copyedString:0x7473657445 0x100206d80 test                        
 </code></pre><p>我们要以看到，这种情况下，不管是strong还是copy属性的对象，其指向的地址都是同一个，即为string指向的地址。但此时改变string值，实际改变了string指向的地址，strongString、copyedString任指向原地址，显示源地址内容“test”。</p>
 <p>接下来，我们把string由不可变改为可变对象，看看会是什么结果。即将下面这一句</p>
-<pre><code>- (<span class="keyword">void</span>)mutableStringTest {
-    NSMutableString *<span class="built_in">string</span> = [NSMutableString stringWithFormat:@<span class="string">"test"</span>];
-    self.strongString = <span class="built_in">string</span>;
-    self.copyedString = <span class="built_in">string</span>;
-    NSLog(@<span class="string">"原字符串:%p %p %@"</span>,<span class="built_in">string</span>,&amp;<span class="built_in">string</span>,<span class="built_in">string</span>);
-    NSLog(@<span class="string">"strongString:%p %p %@"</span>,_strongString,&amp;_strongString,_strongString);
-    NSLog(@<span class="string">"copyedString:%p %p %@"</span>,_copyedString,&amp;_copyedString,_copyedString);
-    <span class="comment">//改变string</span>
-    [<span class="built_in">string</span> appendString:@<span class="string">"123"</span>];
-    NSLog(@<span class="string">"原字符串:%p %p %@"</span>,<span class="built_in">string</span>,&amp;<span class="built_in">string</span>,<span class="built_in">string</span>);
-    NSLog(@<span class="string">"strongString:%p %p %@"</span>,_strongString,&amp;_strongString,_strongString);
-    NSLog(@<span class="string">"copyedString:%p %p %@"</span>,_copyedString,&amp;_copyedString,_copyedString);
+<pre><code>- (void)mutableStringTest {
+    NSMutableString *string = [NSMutableString stringWithFormat:@&quot;test&quot;];
+    self.strongString = string;
+    self.copyedString = string;
+    NSLog(@&quot;原字符串:%p %p %@&quot;,string,&amp;string,string);
+    NSLog(@&quot;strongString:%p %p %@&quot;,_strongString,&amp;_strongString,_strongString);
+    NSLog(@&quot;copyedString:%p %p %@&quot;,_copyedString,&amp;_copyedString,_copyedString);
+    //改变string
+    [string appendString:@&quot;123&quot;];
+    NSLog(@&quot;原字符串:%p %p %@&quot;,string,&amp;string,string);
+    NSLog(@&quot;strongString:%p %p %@&quot;,_strongString,&amp;_strongString,_strongString);
+    NSLog(@&quot;copyedString:%p %p %@&quot;,_copyedString,&amp;_copyedString,_copyedString);
 }
 </code></pre><p>其输出结果是：</p>
-<pre><code>原字符串:<span class="number">0x100114cd0</span> <span class="number">0x7fff5fbff7d8</span> <span class="keyword">test</span>
-<span class="label">strongString:</span><span class="number">0x100114cd0</span> <span class="number">0x100106ef8</span> <span class="keyword">test</span>
-<span class="label">copyedString:</span><span class="number">0x7473657445</span> <span class="number">0x100106f00</span> <span class="keyword">test</span>
+<pre><code>原字符串:0x100114cd0 0x7fff5fbff7d8 test
+strongString:0x100114cd0 0x100106ef8 test
+copyedString:0x7473657445 0x100106f00 test
 
-原字符串:<span class="number">0x100114cd0</span> <span class="number">0x7fff5fbff7d8</span> test123
-<span class="label">strongString:</span><span class="number">0x100114cd0</span> <span class="number">0x100106ef8</span> test123
-<span class="label">copyedString:</span><span class="number">0x7473657445</span> <span class="number">0x100106f00</span> <span class="keyword">test</span>
+原字符串:0x100114cd0 0x7fff5fbff7d8 test123
+strongString:0x100114cd0 0x100106ef8 test123
+copyedString:0x7473657445 0x100106f00 test
 </code></pre><p>此时，我们如果去修改string字符串的话，因为_strongString与string是指向同一对象，所以_strongString的值也会跟随着改变(<code>需要注意的是，此时_strongString的类型实际上是NSMutableString，而不是NSString</code>)；可以看到：而_copyedString是指向另一个对象的，所以并不会改变。</p>
 <p><br></p>
 <font size="4" color="green">结论</font>
@@ -354,7 +354,7 @@ copyedString:<span class="number">0x7473657445</span> <span class="number">0x100
 </footer>
     </div>
     
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
 
 
 <script>
@@ -370,8 +370,8 @@ copyedString:<span class="number">0x7473657445</span> <span class="number">0x100
 		open_in_new: false
 	}
 </script>
-<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
-<script src="/js/main.js" type="text/javascript"></script>
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
 
 
 
@@ -390,13 +390,14 @@ MathJax.Hub.Config({
 MathJax.Hub.Queue(function() {
     var all = MathJax.Hub.getAllJax(), i;
     for(i=0; i < all.length; i += 1) {
-        all[i].SourceElement().parentNode.className += ' has-jax';                 
-    }       
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
 });
 </script>
 
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+
 
 
   </div>

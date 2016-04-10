@@ -21,7 +21,7 @@
   
     <link rel="icon" href="/favicon.ico">
   
-  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
   <div id="container">
@@ -98,9 +98,9 @@
 					<nav class="header-nav">
 						<div class="social">
 							
-								<a class="github" target="_blank" href="/#" title="github">github</a>
+								<a class="github" target="_blank" href="https://github.com/OceanOver" title="github">github</a>
 					        
-								<a class="rss" target="_blank" href="/#" title="rss">rss</a>
+								<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
 					        
 						</div>
 					</nav>
@@ -164,9 +164,9 @@
 			<nav class="header-nav">
 				<div class="social">
 					
-						<a class="github" target="_blank" href="/#" title="github">github</a>
+						<a class="github" target="_blank" href="https://github.com/OceanOver" title="github">github</a>
 			        
-						<a class="rss" target="_blank" href="/#" title="rss">rss</a>
+						<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
 			        
 				</div>
 			</nav>
@@ -353,35 +353,35 @@
 
 <span class="comment">// 绘制图层</span>
 - (<span class="keyword">void</span>)drawCustomLayer {
-    <span class="built_in">CGSize</span> size = [<span class="built_in">UIScreen</span> mainScreen]<span class="variable">.bounds</span><span class="variable">.size</span>;
+    <span class="built_in">CGSize</span> size = [<span class="built_in">UIScreen</span> mainScreen].bounds.size;
     <span class="comment">//创建图层</span>
     _layer = [[<span class="built_in">CALayer</span> alloc] init];
     <span class="comment">//设置背景颜色,由于QuartzCore是跨平台框架，无法直接使用UIColor</span>
-    _layer<span class="variable">.backgroundColor</span> = [<span class="built_in">UIColor</span> colorWithRed:<span class="number">0.657</span> green:<span class="number">1.000</span> blue:<span class="number">0.712</span> alpha:<span class="number">1.000</span>]<span class="variable">.CGColor</span>;
+    _layer.backgroundColor = [<span class="built_in">UIColor</span> colorWithRed:<span class="number">0.657</span> green:<span class="number">1.000</span> blue:<span class="number">0.712</span> alpha:<span class="number">1.000</span>].CGColor;
     <span class="comment">//设置中心点(中心点使用position而不是center)</span>
-    _layer<span class="variable">.position</span>=<span class="built_in">CGPointMake</span>(size<span class="variable">.width</span>/<span class="number">2</span>, size<span class="variable">.height</span>/<span class="number">2</span>);
-    _layer<span class="variable">.bounds</span> = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, Width, Width);
-    _layer<span class="variable">.cornerRadius</span> = Width / <span class="number">2</span>;
+    _layer.position=<span class="built_in">CGPointMake</span>(size.width/<span class="number">2</span>, size.height/<span class="number">2</span>);
+    _layer.bounds = <span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, Width, Width);
+    _layer.cornerRadius = Width / <span class="number">2</span>;
     <span class="comment">//设置阴影</span>
-    _layer<span class="variable">.shadowColor</span> = [<span class="built_in">UIColor</span> colorWithRed:<span class="number">0.765</span> green:<span class="number">0.284</span> blue:<span class="number">0.289</span> alpha:<span class="number">1.000</span>]<span class="variable">.CGColor</span>;
-    _layer<span class="variable">.shadowOffset</span> = <span class="built_in">CGSizeMake</span>(<span class="number">2</span>, <span class="number">2</span>);
-    _layer<span class="variable">.shadowOpacity</span> = <span class="number">0.8</span>;
+    _layer.shadowColor = [<span class="built_in">UIColor</span> colorWithRed:<span class="number">0.765</span> green:<span class="number">0.284</span> blue:<span class="number">0.289</span> alpha:<span class="number">1.000</span>].CGColor;
+    _layer.shadowOffset = <span class="built_in">CGSizeMake</span>(<span class="number">2</span>, <span class="number">2</span>);
+    _layer.shadowOpacity = <span class="number">0.8</span>;
     <span class="comment">//设置锚点(永远和position重合),CGPointZero equivalent to CGPointMake(0, 0)</span>
-    _layer<span class="variable">.anchorPoint</span> = <span class="built_in">CGPointMake</span>(<span class="number">0.5</span>, <span class="number">0.5</span>);<span class="comment">//CGPointZero;</span>
+    _layer.anchorPoint = <span class="built_in">CGPointMake</span>(<span class="number">0.5</span>, <span class="number">0.5</span>);<span class="comment">//CGPointZero;</span>
 
     <span class="comment">//加到根图层</span>
-    [<span class="keyword">self</span><span class="variable">.view</span><span class="variable">.layer</span> addSublayer:_layer];
+    [<span class="keyword">self</span>.view.layer addSublayer:_layer];
 }
 
 <span class="comment">//点击旋转（放大，缩小，平移... 通过修改position和bounds均可产生动画）</span>
 - (<span class="keyword">void</span>)touchesBegan:(<span class="built_in">NSSet</span> *)touches withEvent:(<span class="built_in">UIEvent</span> *)event {
     <span class="keyword">static</span> <span class="keyword">int</span> index = <span class="number">0</span>;
     <span class="keyword">if</span> (index == <span class="number">0</span>) {
-        _layer<span class="variable">.transform</span> = <span class="built_in">CATransform3DMakeScale</span>(<span class="number">1</span>, -<span class="number">1</span>, <span class="number">1</span>);
+        _layer.transform = <span class="built_in">CATransform3DMakeScale</span>(<span class="number">1</span>, <span class="number">-1</span>, <span class="number">1</span>);
         index = <span class="number">1</span>;
     }
     <span class="keyword">else</span> {
-        _layer<span class="variable">.transform</span> = <span class="built_in">CATransform3DMakeScale</span>(<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>);
+        _layer.transform = <span class="built_in">CATransform3DMakeScale</span>(<span class="number">1</span>, <span class="number">1</span>, <span class="number">1</span>);
         index = <span class="number">0</span>;
     }
 }
@@ -471,7 +471,7 @@
 </footer>
     </div>
     
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
 
 
 <script>
@@ -487,8 +487,8 @@
 		open_in_new: false
 	}
 </script>
-<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
-<script src="/js/main.js" type="text/javascript"></script>
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
 
 
 
@@ -507,13 +507,14 @@ MathJax.Hub.Config({
 MathJax.Hub.Queue(function() {
     var all = MathJax.Hub.getAllJax(), i;
     for(i=0; i < all.length; i += 1) {
-        all[i].SourceElement().parentNode.className += ' has-jax';                 
-    }       
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
 });
 </script>
 
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+
 
 
   </div>

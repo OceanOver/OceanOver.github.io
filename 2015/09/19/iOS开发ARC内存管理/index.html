@@ -27,7 +27,7 @@
   
     <link rel="icon" href="/favicon.ico">
   
-  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
   <div id="container">
@@ -104,9 +104,9 @@
 					<nav class="header-nav">
 						<div class="social">
 							
-								<a class="github" target="_blank" href="/#" title="github">github</a>
+								<a class="github" target="_blank" href="https://github.com/OceanOver" title="github">github</a>
 					        
-								<a class="rss" target="_blank" href="/#" title="rss">rss</a>
+								<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
 					        
 						</div>
 					</nav>
@@ -170,9 +170,9 @@
 			<nav class="header-nav">
 				<div class="social">
 					
-						<a class="github" target="_blank" href="/#" title="github">github</a>
+						<a class="github" target="_blank" href="https://github.com/OceanOver" title="github">github</a>
 			        
-						<a class="rss" target="_blank" href="/#" title="rss">rss</a>
+						<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
 			        
 				</div>
 			</nav>
@@ -219,17 +219,17 @@
         <p><code>ARC</code>  <code>内存管理</code>   </p>
 <p>在了解ARC之前，先了解OC内存管理里面的<code>对象生命周期</code>、<code>引用计数</code>、<code>对象所有权</code> ，（自行查阅相关资料）</p>
 <p>本文简单介绍iOS开发中ARC(Automatic Reference Counting，<code>自动引用计数</code>)内存管理的一些要点，所以不会讲的很全面。详细的关于ARC的信息请参见苹果的！<a href="https://developer.apple.com/library/ios/releasenotes/ObjectiveC/RN-TransitioningToARC/Introduction/Introduction.html" target="_blank" rel="external">官方文档</a>与网上的其他教程） <a id="more"></a></p>
-<h3 id="本文的主要内容：">本文的主要内容：</h3><ul>
+<h3 id="本文的主要内容："><a href="#本文的主要内容：" class="headerlink" title="本文的主要内容："></a>本文的主要内容：</h3><ul>
 <li>ARC的本质 </li>
 <li>__strong, __weak</li>
 <li>ARC与Toll-Free Bridging</li>
 </ul>
-<h3 id="ARC的本质">ARC的本质</h3><p>先引用官方的关于ARC的一句描述： </p>
+<h3 id="ARC的本质"><a href="#ARC的本质" class="headerlink" title="ARC的本质"></a>ARC的本质</h3><p>先引用官方的关于ARC的一句描述： </p>
 <p>Automatic Reference Counting (ARC) is a compiler-level feature that simplifies the process of managing object lifetimes (memory management) in Cocoa applications. </p>
 <p>ARC是编译器（时）特性，而不是运行时特性（关于运行时<code>runtime</code>是深入学习iOS的重要内容，有兴趣的同学可以自己深入学习） </p>
 <p>ARC只是相对于MRC的改进，本质上依然是通过管理对象的引用计数。 </p>
 <p>如果你启用了ARC，只管像平常那样按需分配并使用对象，编译器会帮你插入retain和release语句。</p>
-<h3 id="__strong,___weak">__strong, __weak</h3><p><strong>__strong</strong></p>
+<h3 id="strong-weak"><a href="#strong-weak" class="headerlink" title="__strong, __weak"></a>__strong, __weak</h3><p><strong>__strong</strong></p>
 <p>表示引用为强引用。对应在定义property时的”strong”。所有对象只有当没有任何一个强引用指向时，才会被释放。</p>
 <p>注意：如果在声明引用时不加修饰符，那么引用将默认是强引用。当需要释放强引用指向的对象时，需要将强引用置nil。</p>
 <p><strong>__weak</strong></p>
@@ -243,14 +243,14 @@
 <p>the correct format is:</p>
 <p>ClassName * qualifier variableName;</p>
 <p>按照这个说明，要定义一个weak型的NSString引用，它的写法应该是：</p>
-<pre><code><span class="built_in">NSString</span> * __<span class="keyword">weak</span> str = <span class="string">@"hehe"</span>; <span class="comment">// 正确！</span>
+<pre><code>NSString * __weak str = @&quot;hehe&quot;; // 正确！
 </code></pre><p>而不应该是：</p>
-<pre><code>__<span class="keyword">weak</span> <span class="built_in">NSString</span> *str = <span class="string">@"hehe"</span>;  <span class="comment">// 不推荐！</span>
+<pre><code>__weak NSString *str = @&quot;hehe&quot;;  // 不推荐！
 </code></pre><p>我相信很多人都和我一样，从开始用ARC就一直用上面那种错误的写法。</p>
 <p>那这里就有疑问了，既然文档说是错误的，为啥编译器不报错呢？文档又解释道：</p>
 <p>Other variants are technically incorrect but are “forgiven” by the compiler. To understand the issue, see<a href="http://cdecl.org/" target="_blank" rel="external">http://cdecl.org/</a>.</p>
 <p>好吧，看来是考虑到很多人会用错，所以在编译器这边贴心地帮我们忽略并处理掉了这个错误。</p>
-<h3 id="ARC与Toll-Free_Bridging">ARC与Toll-Free Bridging</h3><p>ARC只对可保留的对象指针有效。例如：</p>
+<h3 id="ARC与Toll-Free-Bridging"><a href="#ARC与Toll-Free-Bridging" class="headerlink" title="ARC与Toll-Free Bridging"></a>ARC与Toll-Free Bridging</h3><p>ARC只对可保留的对象指针有效。例如：</p>
 <ul>
 <li>代码块指针</li>
 <li>Objective-C指针</li>
@@ -355,7 +355,7 @@
 </footer>
     </div>
     
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
 
 
 <script>
@@ -371,8 +371,8 @@
 		open_in_new: false
 	}
 </script>
-<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
-<script src="/js/main.js" type="text/javascript"></script>
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
 
 
 
@@ -391,13 +391,14 @@ MathJax.Hub.Config({
 MathJax.Hub.Queue(function() {
     var all = MathJax.Hub.getAllJax(), i;
     for(i=0; i < all.length; i += 1) {
-        all[i].SourceElement().parentNode.className += ' has-jax';                 
-    }       
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
 });
 </script>
 
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+
 
 
   </div>

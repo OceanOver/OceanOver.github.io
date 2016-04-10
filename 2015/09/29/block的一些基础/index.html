@@ -21,7 +21,7 @@
   
     <link rel="icon" href="/favicon.ico">
   
-  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
   <div id="container">
@@ -98,9 +98,9 @@
 					<nav class="header-nav">
 						<div class="social">
 							
-								<a class="github" target="_blank" href="/#" title="github">github</a>
+								<a class="github" target="_blank" href="https://github.com/OceanOver" title="github">github</a>
 					        
-								<a class="rss" target="_blank" href="/#" title="rss">rss</a>
+								<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
 					        
 						</div>
 					</nav>
@@ -164,9 +164,9 @@
 			<nav class="header-nav">
 				<div class="social">
 					
-						<a class="github" target="_blank" href="/#" title="github">github</a>
+						<a class="github" target="_blank" href="https://github.com/OceanOver" title="github">github</a>
 			        
-						<a class="rss" target="_blank" href="/#" title="rss">rss</a>
+						<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
 			        
 				</div>
 			</nav>
@@ -211,12 +211,12 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p>在异步编程时我们经常进行函数回调，由于函数调用是异步执行的，我们如果想让一个操作执行完之后执行另一个函数，则无法按照正常代码书写顺序进行编程，因为我们无法获知前一个方法什么时候执行结束，此时我们经常会用到委托或者代码块（Block）。Block就是一个函数体（匿名函数），它是ObjC对于闭包的实现，在块状中我们可以持有或引用局部变量，同时利用Block你可以将一个操作作为一个参数进行传递（是不是想起了C语言中的函数指针）。<a id="more"></a></p>
-<h3 id="block定义">block定义</h3><ol>
+<h3 id="block定义"><a href="#block定义" class="headerlink" title="block定义"></a>block定义</h3><ol>
 <li>Block类型定义：<font color="#EF4700"><strong>返回值类型(^ 变量名)(参数列表)</strong></font>（注意Block也是一种类型）；</li>
 <li>Block的typedef定义：<font color="#EF4700"><strong>返回值类型(^类型名称)(参数列表)</strong></font>；</li>
 <li>Block的实现：<font color="#EF4700"><strong>^(参数列表){操作主体}</strong></font>；</li>
 </ol>
-<h3 id="block与存取变量">block与存取变量</h3><ul>
+<h3 id="block与存取变量"><a href="#block与存取变量" class="headerlink" title="block与存取变量"></a>block与存取变量</h3><ul>
 <li>可以读取和Block pointer同一個范围的变量值</li>
 </ul>
 <figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">5</span>;</span><br><span class="line"><span class="keyword">int</span> (^myBlock) (<span class="keyword">int</span>) = ^(<span class="keyword">int</span> b) &#123;</span><br><span class="line">    <span class="keyword">return</span> a + b;</span><br><span class="line">&#125;;</span><br><span class="line">a = <span class="number">8</span>;</span><br><span class="line"><span class="keyword">int</span> result = myBlock(<span class="number">4</span>);</span><br><span class="line"><span class="built_in">NSLog</span>(<span class="string">@"%d"</span>,result);<span class="comment">//结果是9</span></span><br></pre></td></tr></table></figure>
@@ -238,7 +238,7 @@
 <li>__weak只能在ARC模式下使用，也只能修饰对象（NSString），不能修饰基本数据类型(int)。</li>
 <li>__block对象可以在block中被重新赋值，__weak不可以。</li>
 </ol>
-<h3 id="block与引用循环">block与引用循环</h3><p>retain cycle问题的根源在于Block和obj可能会互相强引用，互相retain对方，这样就导致了retain cycle，最后这个Block和obj就变成了孤岛，谁也释放不了谁。</p>
+<h3 id="block与引用循环"><a href="#block与引用循环" class="headerlink" title="block与引用循环"></a>block与引用循环</h3><p>retain cycle问题的根源在于Block和obj可能会互相强引用，互相retain对方，这样就导致了retain cycle，最后这个Block和obj就变成了孤岛，谁也释放不了谁。</p>
 <figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">void</span>(^CustomBlock)();</span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ViewController</span> : <span class="title">UIViewController</span></span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>,<span class="keyword">copy</span>) CustomBlock myBlock;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">_myBlock = ^() &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>,<span class="keyword">self</span>);<span class="comment">//警告self</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <p>直接循环引用。</p>
@@ -246,14 +246,14 @@
 <p>_myBlock——retain———&gt;self(ViewController)<br><br></p>
 <figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">void</span>(^CustomBlock)();</span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">BlockTester</span> : <span class="title">NSObject</span></span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>,<span class="keyword">assign</span>) <span class="built_in">NSInteger</span> statusCode;</span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>,<span class="keyword">copy</span>) CustomBlock myBlock;</span><br><span class="line">- (<span class="keyword">void</span>)useBlock:(CustomBlock)block;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">ViewController</span> () </span>&#123;</span><br><span class="line">    BlockTester *_blockTester;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
-<figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">_blockTester<span class="variable">.myBlock</span> = ^() &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>,<span class="keyword">self</span>);<span class="comment">//警告self</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">_blockTester.myBlock = ^() &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%@"</span>,<span class="keyword">self</span>);<span class="comment">//警告self</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <p>间接循环引用。</p>
 <p>ViewController —–retain–&gt; _blockTester</p>
 <p>_blockTester ——-强引用—&gt;myBlock(堆block,会retain 内部引用对象变量)</p>
 <p>myBlock  —retain———&gt;self(ViewController)<br><br></p>
 <figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"1:%@"</span>,<span class="keyword">self</span>);<span class="comment">//没有警告self</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 <p>self 并没有直接或间接的去强引用 gcd block。 可以想象 gcd block 会统一被管理在调度中心来管理，反正不是self。<br><br></p>
-<figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[_blockTester useBlock:^&#123;</span><br><span class="line">    <span class="keyword">if</span> (_blockTester<span class="variable">.statusCode</span> == <span class="number">200</span>) &#123;</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"2:%@"</span>,<span class="keyword">self</span>);<span class="comment">//没有警告self</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
+<figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[_blockTester useBlock:^&#123;</span><br><span class="line">    <span class="keyword">if</span> (_blockTester.statusCode == <span class="number">200</span>) &#123;</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"2:%@"</span>,<span class="keyword">self</span>);<span class="comment">//没有警告self</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;];</span><br></pre></td></tr></table></figure>
 <p>栈block 并不会对内部引用对象变量 retain.而是直接引用对象变量地址。</p>
 <p>这里 self 和  _blockTester 并没有对 方法参数block 做任何引用操作，block 一直存在于栈上，直到执行完毕被释放掉。</p>
 <p>当然block 也没有对self  做任何操作，直接引用了地址。</p>
@@ -342,7 +342,7 @@
 </footer>
     </div>
     
-  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
 
 
 <script>
@@ -358,8 +358,8 @@
 		open_in_new: false
 	}
 </script>
-<script src="http://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js" type="text/javascript"></script>
-<script src="/js/main.js" type="text/javascript"></script>
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
 
 
 
@@ -378,13 +378,14 @@ MathJax.Hub.Config({
 MathJax.Hub.Queue(function() {
     var all = MathJax.Hub.getAllJax(), i;
     for(i=0; i < all.length; i += 1) {
-        all[i].SourceElement().parentNode.className += ' has-jax';                 
-    }       
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
 });
 </script>
 
-<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
 </script>
+
 
 
   </div>
