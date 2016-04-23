@@ -1,0 +1,608 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>OceanOver&#39;Blog</title>
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://yoursite.com/"/>
+  <updated>2016-04-10T03:06:57.000Z</updated>
+  <id>http://yoursite.com/</id>
+  
+  <author>
+    <name>OceanOver</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>如何使用Xcode的Targets来管理开发和生产构建</title>
+    <link href="http://yoursite.com/2016/04/10/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8Xcode%E7%9A%84Targets%E6%9D%A5%E7%AE%A1%E7%90%86%E5%BC%80%E5%8F%91%E5%92%8C%E7%94%9F%E4%BA%A7%E6%9E%84%E5%BB%BA/"/>
+    <id>http://yoursite.com/2016/04/10/如何使用Xcode的Targets来管理开发和生产构建/</id>
+    <published>2016-04-10T02:43:32.000Z</published>
+    <updated>2016-04-10T03:06:57.000Z</updated>
+    
+    <content type="html">&lt;ul&gt;
+&lt;li&gt;原文：&lt;a href=&quot;https://guides.cocoapods.org/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;&lt;strong&gt;How to Use Xcode Targets to Manage Development and Production Builds&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;参加&lt;a href=&quot;http://www.cocoachina.com/ios/20160331/15832.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;CocoaChina&lt;/a&gt;翻译活动时所译&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;编者提示：这篇文章由Eugene Trapeznikov贡献。想象一下，你已经完成了您的应用程序的开发和测试，你现在准备提交生产版本。问题是，一些web服务的url指向测试服务器，同时API密钥被配置用于测试环境。在提交app给苹果审核前，你需要修改所有这些API密钥和URL适应生产版本。这听起来不错，对吧？但是相较于在开发和生产环境之间来回切换，有没有更好的方法来处理开发和生产的构建？这正是接下来Eugene要和你们讨论的。&lt;br&gt;&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&quot;进入Eugene的教程&quot;&gt;&lt;a href=&quot;#进入Eugene的教程&quot; class=&quot;headerlink&quot; title=&quot;进入Eugene的教程&quot;&gt;&lt;/a&gt;进入Eugene的教程&lt;/h3&gt;&lt;p&gt;对于初学者来说，有些人可能会奇怪，为什么你需要使用两个单独的数据库和环境同时开发应用程序。原因是当你继续构建新的功能特性或继续开发你的应用，你希望区分开现有的公开版本和开发版本。标准的软件开发实践是在不同的开发环境下开发不同版本的软件，像我们案例中讲到的开发iphone应用。开发版本的应用程序通常使用一个不同的不同于生产环境的数据库(或如分析的其他系统)。这就是为什么我们应该为不同的环境中使用单独的服务器和数据库。开发人员在测试期间通常都使用虚拟图像或虚拟数据。在测试环境中，使用诸如 “test comment”, “argharghargh” 和 “one more test comment”之类的测试数据并不少见。显然，你不希望你的真实用户看到这样的消息。如果你的应用程序使用了一个分析系统的情况下，你甚至会在测试阶段发送成千上万的事件。同样的,你不会把测试数据和生产数据放在同一个数据库中。这就是为什么总是推荐区分开发和生产环境。&lt;/p&gt;
+&lt;p&gt;在使用两个独立的环境时，你的应用程序需要有一个办法，找出它应该连接到的环境。一种常用的方法是在你的主应用代理里定义一个全局变量，将您的应用程序初始化为开发或生产模式。&lt;/p&gt;
+&lt;figure class=&quot;highlight vim&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;enum environmentType &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    case development, production&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; environmen&lt;span class=&quot;variable&quot;&gt;t:environmentType&lt;/span&gt; = .production&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt; &lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;switch environment &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;case .developmen&lt;span class=&quot;variable&quot;&gt;t:&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    // &lt;span class=&quot;keyword&quot;&gt;set&lt;/span&gt; web service URL &lt;span class=&quot;keyword&quot;&gt;to&lt;/span&gt; development&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    // &lt;span class=&quot;keyword&quot;&gt;set&lt;/span&gt; API &lt;span class=&quot;built_in&quot;&gt;keys&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;to&lt;/span&gt; development&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;print&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&quot;It&#39;s for development&quot;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;case .production:&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    // &lt;span class=&quot;keyword&quot;&gt;set&lt;/span&gt; web service URL &lt;span class=&quot;keyword&quot;&gt;to&lt;/span&gt; production&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    // &lt;span class=&quot;keyword&quot;&gt;set&lt;/span&gt; API &lt;span class=&quot;built_in&quot;&gt;keys&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;to&lt;/span&gt; production&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;print&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;&quot;It&#39;s for production&quot;&lt;/span&gt;)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;这种方法需要你每次切换环境时改变全局变量。虽然这种方法也许快捷，方便，但是它有一些重要的限制。首先，因为我们在开发和生产两个环境中使用一个Bundle ID，你不能在一台设备上安装这两个版本的应用。当你需要要测试开发版本的应用程序,同时仍在该设备上使用生产版本的应用，这就变的不方便了。此外，这种方法很有可能将开发版本的应用上传到应用商店。如果你忘记了改变这个全局变量，你将会上传错误的应用给你的用户。我记得有一次在提交应用程序到应用商店之前我忘记改变全局变量，用户获取到开发版本的应用。这是可怕的。&lt;/p&gt;
+&lt;p&gt;在这篇文章中，我将向你们展示一个更好的方法来区分开发和生产构建。具体而言，我们将在Xcode中创建一个开发的target。这种方法法适用于新的和现有的大型项目，所以你可以用一个现有的应用程序对照本教程。&lt;/p&gt;
+&lt;p&gt;通过应用这种方法,生产和开发版本的应用程序将具有相同的基础代码，但可以有不同的图标,bundle ID 和指向不同的数据库。发布和提交过程将会非常简单。最重要的是,你的测试人员和经理可以在同一设备上安装两个版本的应用程序,所以他们完全知道他们在尝试哪个版本。&lt;/p&gt;
+&lt;h3 id=&quot;如何创建一个新的Target&quot;&gt;&lt;a href=&quot;#如何创建一个新的Target&quot; class=&quot;headerlink&quot; title=&quot;如何创建一个新的Target&quot;&gt;&lt;/a&gt;如何创建一个新的Target&lt;/h3&gt;&lt;p&gt;所以你如何在Xcode中创建一个开发的target?我使用示例项目“todo”引导您一步一步完成整个过程。。您也可以使用自己的项目并按照步骤:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;在项目的导航面板进入项目设置。在Targets区域下，右键单击现有目标并选择 &lt;code&gt;Duplicate&lt;/code&gt; 复制现有的目标。&lt;br&gt;&lt;img src=&quot;./cocoachina_1.png&quot; width=&quot;800&quot; height=&quot;400&quot; align=&quot;center&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Xcode会询问你新的target是否是为iPad开发。对于本教程,我们只是选择“Duplicate Only”。&lt;br&gt;&lt;img src=&quot;./cocoachina_2.png&quot; width=&quot;800&quot; height=&quot;300&quot; align=&quot;center&quot;&gt;&lt;br&gt;&lt;code&gt;提示：如果您的项目支持通用设备,Xcode不会提示上述消息。&lt;/code&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;现在我们有一个名为&lt;code&gt;todo copy&lt;/code&gt;的新的target和build scheme。让我们重命名它使它更容易理解。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;在Targets列表中选择新的target。 按Enter键来编辑文本,添加一个更合适的名字。我更倾向于 “todo Dev”. 你自由选择任何你喜欢的名字。&lt;/li&gt;
+&lt;li&gt;接下来，转到“Manage Schemes…”, 选择您在步骤1中创建的shceme,并按“输入”。 使scheme的名称和新的target的名称相同(这是一个对于新的target的选择)&lt;br&gt;&lt;img src=&quot;./cocoachina_3.png&quot; width=&quot;800&quot; height=&quot;360&quot; align=&quot;center&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;步骤4是可选的,但强烈推荐。如果你想简单地区分开发和生产构建，你应该为每个版本使用单独的图标和启动页。这将使你的测试人员更清晰的知道正在使用哪个app,防止你上传开发版本。😃&lt;/p&gt;
+&lt;p&gt; 跳到 &lt;code&gt;Assets.xcassets&lt;/code&gt; 添加一个新的图标。右击图标 &amp;gt; &lt;strong&gt;App Icons &amp;amp; Launch Images&lt;/strong&gt; &amp;gt; &lt;strong&gt;New iOS App Icon&lt;/strong&gt;. 新图标重命名为“AppIcon-Dev”同时添加自己的图片。&lt;br&gt;&lt;img src=&quot;./cocoachina_4.jpg&quot; width=&quot;800&quot; height=&quot;500&quot; align=&quot;center&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;现在回到项目设置,选择您的开发target改变bundle identifier。你可以简单地将“Dev”追加到原来的ID上。如果执行了步骤4，请确保更改应用app icon，设置为在上一步中创建的。&lt;br&gt;&lt;img src=&quot;./cocoachina_5.png&quot; width=&quot;800&quot; height=&quot;500&quot; align=&quot;center&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Xcode 自动为你的target添加plist文件(如todo copy-Info.plist)。你可以在项目的根文件夹找到它。将它从“copy”重命名为“Dev”,并将它放在原始的plist文件下。这里你将更容易管理文件。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;现在打开你开发target的“Build Settings”，滚动到“Packaging”，并将值改为开发的plist文件（todo Dev.plist）。&lt;br&gt;&lt;img src=&quot;./cocoachina_6.png&quot; width=&quot;800&quot; height=&quot;400&quot; align=&quot;center&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;最后，我们会为生产和开发target配置预处理宏/编译器标识。之后我们就可以使用该标识在我们的代码来检测应用程序正在运行的版本。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;对于Objective-C的项目，去到&lt;code&gt;Build Settings&lt;/code&gt;下Apple &lt;code&gt;LLVM 7.0 - Preprocessing&lt;/code&gt;。拓展&lt;code&gt;Preprocessor Macros&lt;/code&gt;在Rebug和Release区域添加一个变量。对于开发target（即todo Dev），将该值设置为&lt;code&gt;DEVELOPMENT = 1&lt;/code&gt;。另一个，将值设为&lt;code&gt;DEVELOPMENT=0&lt;/code&gt;来表示生产版本。&lt;br&gt;&lt;img src=&quot;./cocoachina_7.png&quot; width=&quot;800&quot; height=&quot;310&quot; align=&quot;center&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;img src=&quot;./cocoachina_8.png&quot; width=&quot;800&quot; height=&quot;310&quot; align=&quot;center&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;/p&gt;
+&lt;p&gt;对于swift的项目，编译器不再支持预处理指令。作为替代，它使用编译时的属性和build配置。选中开发target，添加一个标识表示开发版本。去到&lt;code&gt;Build Setting&lt;/code&gt;往下滚动到&lt;code&gt;Swift Compiler - Custom Flags&lt;/code&gt;部分。将值设为&lt;code&gt;-DDEVELOPMENT&lt;/code&gt;表示这个target作为开发版本。&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./cocoachina_9.png&quot; width=&quot;800&quot; height=&quot;300&quot; align=&quot;center&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;现在，您已经创建并配置了开发target，下一步呢？&lt;/p&gt;
+&lt;h3 id=&quot;使用Target和宏&quot;&gt;&lt;a href=&quot;#使用Target和宏&quot; class=&quot;headerlink&quot; title=&quot;使用Target和宏&quot;&gt;&lt;/a&gt;使用Target和宏&lt;/h3&gt;&lt;p&gt;根据已配置的宏DEV_VERSION，我们可以在代码中利用它动态地编译项目。下面是一个简单的例子：&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Objective-C:&lt;/strong&gt;&lt;/p&gt;
+&lt;figure class=&quot;highlight arduino&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#&lt;span class=&quot;meta-keyword&quot;&gt;if&lt;/span&gt; DEVELOPMENT&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#&lt;span class=&quot;meta-keyword&quot;&gt;define&lt;/span&gt; SERVER_URL @&lt;span class=&quot;string&quot;&gt;&quot;http://dev.server.com/api/&quot;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#&lt;span class=&quot;meta-keyword&quot;&gt;define&lt;/span&gt; API_TOKEN @&lt;span class=&quot;string&quot;&gt;&quot;DI2023409jf90ew&quot;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#&lt;span class=&quot;meta-keyword&quot;&gt;else&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#&lt;span class=&quot;meta-keyword&quot;&gt;define&lt;/span&gt; SERVER_URL @&lt;span class=&quot;string&quot;&gt;&quot;http://prod.server.com/api/&quot;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#&lt;span class=&quot;meta-keyword&quot;&gt;define&lt;/span&gt; API_TOKEN @&lt;span class=&quot;string&quot;&gt;&quot;71a629j0f090232&quot;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#&lt;span class=&quot;meta-keyword&quot;&gt;endif&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;Objective-C中你可以使用&lt;code&gt;＃if&lt;/code&gt;检查&lt;code&gt;DEVELOPMENT&lt;/code&gt;的环境，并相应的设置URLs/ API密钥。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Swift:&lt;/strong&gt;&lt;/p&gt;
+&lt;figure class=&quot;highlight nix&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;#if DEVELOPMENT&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;SERVER_URL&lt;/span&gt; = &lt;span class=&quot;string&quot;&gt;&quot;http://dev.server.com/api/&quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;API_TOKEN&lt;/span&gt; = &lt;span class=&quot;string&quot;&gt;&quot;DI2023409jf90ew&quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;#else&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;SERVER_URL&lt;/span&gt; = &lt;span class=&quot;string&quot;&gt;&quot;http://prod.server.com/api/&quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;attr&quot;&gt;API_TOKEN&lt;/span&gt; = &lt;span class=&quot;string&quot;&gt;&quot;71a629j0f090232&quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;#endif&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;Swift中你仍然可以使用&lt;code&gt;#if&lt;/code&gt;判定build的参数动态编译。然而，除了使用&lt;code&gt;#define&lt;/code&gt;定义基本常量，在swift中我们也可以用&lt;code&gt;let&lt;/code&gt;定义一个全局常量。&lt;/p&gt;
+&lt;figure class=&quot;highlight cs&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;提示:通常，你会把上面的代码放在app &lt;span class=&quot;keyword&quot;&gt;delegate&lt;/span&gt;中。但这最终是取决于你在哪里初始化应用程序设置。&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;现在，当您选择“todo Dev”scheme运行项目，你创建开发版本会自动将服务器的配置设置为开发环境。现在，您可以上传开发版本到TestFlight 或 HockeyApp供测试人员和管理人员来测试。&lt;/p&gt;
+&lt;p&gt;接着如果你需要创建一个生产版本，您可以简单地选择”todo”scheme。不需要更改代码。&lt;/p&gt;
+&lt;h3 id=&quot;管理多个target的一些注意事项&quot;&gt;&lt;a href=&quot;#管理多个target的一些注意事项&quot; class=&quot;headerlink&quot; title=&quot;管理多个target的一些注意事项&quot;&gt;&lt;/a&gt;管理多个target的一些注意事项&lt;/h3&gt;&lt;p&gt;1.当你添加新的文件到项目中，不要忘记选择两个target，以保持你的代码同步在两个版本。&lt;br&gt;&lt;img src=&quot;./cocoachina_10.png&quot; width=&quot;800&quot; height=&quot;400&quot; align=&quot;center&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;/p&gt;
+&lt;p&gt;2.如果你使用的CocoaPods，不要忘了添加新的target到你的podfile中。您可以使用&lt;code&gt;link_with&lt;/code&gt;指定多个target。您可以进一步细节请查阅的 &lt;a href=&quot;https://guides.cocoapods.org/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;&lt;strong&gt;CocoaPods&lt;/strong&gt;&lt;/a&gt; 文档。你的podfile看起来是这样的：&lt;/p&gt;
+&lt;figure class=&quot;highlight mel&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&#39;https://github.com/CocoaPods/Specs.git&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;platform :ios, &lt;span class=&quot;string&quot;&gt;&#39;7.0&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;workspace&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;&#39;todo&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;link_with &lt;span class=&quot;string&quot;&gt;&#39;todo&#39;&lt;/span&gt;, &lt;span class=&quot;string&quot;&gt;&#39;todo Dev&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;pod &lt;span class=&quot;string&quot;&gt;&#39;Mixpanel&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;pod &lt;span class=&quot;string&quot;&gt;&#39;AFNetworking&#39;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;3.如果你使用持续集成系统，如 Travis CI 或Jenkins，别忘了配置两个target的build和deliver。&lt;/p&gt;
+&lt;p&gt;你对这个教程有什么想法？如何管理你的开发和生产构建？给我留言评论分享您的想法。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;ul&gt;
+&lt;li&gt;原文：&lt;a href=&quot;https://guides.cocoapods.org/&quot;&gt;&lt;strong&gt;How to Use Xcode Targets to Manage Development and Production Builds&lt;/strong&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;参加&lt;a href=&quot;http://www.cocoachina.com/ios/20160331/15832.html&quot;&gt;CocoaChina&lt;/a&gt;翻译活动时所译&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr&gt;
+&lt;p&gt;编者提示：这篇文章由Eugene Trapeznikov贡献。想象一下，你已经完成了您的应用程序的开发和测试，你现在准备提交生产版本。问题是，一些web服务的url指向测试服务器，同时API密钥被配置用于测试环境。在提交app给苹果审核前，你需要修改所有这些API密钥和URL适应生产版本。这听起来不错，对吧？但是相较于在开发和生产环境之间来回切换，有没有更好的方法来处理开发和生产的构建？这正是接下来Eugene要和你们讨论的。&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="翻译" scheme="http://yoursite.com/tags/%E7%BF%BB%E8%AF%91/"/>
+    
+      <category term="技巧" scheme="http://yoursite.com/tags/%E6%8A%80%E5%B7%A7/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>iOS中category添加属性</title>
+    <link href="http://yoursite.com/2015/10/07/iOS%E4%B8%ADcategory%E6%B7%BB%E5%8A%A0%E5%B1%9E%E6%80%A7/"/>
+    <id>http://yoursite.com/2015/10/07/iOS中category添加属性/</id>
+    <published>2015-10-07T08:15:39.000Z</published>
+    <updated>2015-10-07T08:19:32.000Z</updated>
+    
+    <content type="html">&lt;p&gt;我们知道，使用Category可以很方便地为现有的类增加方法，但却无法直接增加实例变量。不过从Mac OS X v10.6开始，系统提供了Associative References，这个问题就很容易解决了。这种方法也就是所谓的关联(association)，我们可以在runtime期间动态地添加任意多的属性，并且随时读取。&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;所用到的两个重要runtime API是：&lt;/p&gt;
+&lt;figure class=&quot;highlight obj-c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;OBJC_EXPORT &lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt; objc_setAssociatedObject(&lt;span class=&quot;keyword&quot;&gt;id&lt;/span&gt; object, &lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt; *key, &lt;span class=&quot;keyword&quot;&gt;id&lt;/span&gt; value, objc_AssociationPolicy policy)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;OBJC_EXPORT &lt;span class=&quot;keyword&quot;&gt;id&lt;/span&gt; objc_getAssociatedObject(&lt;span class=&quot;keyword&quot;&gt;id&lt;/span&gt; object, &lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt; *key)&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;__OSX_&lt;span class=&quot;built_in&quot;&gt;AVAILABLE_STARTING&lt;/span&gt;(__MAC_10_6, __IPHONE_3_1);&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;&lt;code&gt;例：&lt;/code&gt;我们现在打算利用category对UILabel进行属性补充。一般我们有个原则：&lt;code&gt;能用category扩展就不用继承，因为随着继承深度的增加，代码的可维护性也会增加很多。&lt;/code&gt;使用category可以这么做：&lt;/p&gt;
+&lt;figure class=&quot;highlight obj-c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#import &lt;span class=&quot;meta-string&quot;&gt;&amp;lt;UIKit/UIKit.h&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;meta&quot;&gt;#import &lt;span class=&quot;meta-string&quot;&gt;&amp;lt;objc/runtime.h&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;@interface&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;UILabel&lt;/span&gt; (&lt;span class=&quot;title&quot;&gt;Associate&lt;/span&gt;)&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;@property&lt;/span&gt;(&lt;span class=&quot;keyword&quot;&gt;nonatomic&lt;/span&gt;,&lt;span class=&quot;keyword&quot;&gt;copy&lt;/span&gt;) &lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; *labelId;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;@end&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight obj-c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;@implementation&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;UILabel&lt;/span&gt; (&lt;span class=&quot;title&quot;&gt;Associate&lt;/span&gt;)&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;@dynamic&lt;/span&gt; labelId;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;char&lt;/span&gt; labelIdKey;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)setLabelId:(&lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; *)labelId &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    objc_setAssociatedObject(&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;, &amp;amp;labelIdKey, labelId, OBJC_ASSO&lt;span class=&quot;built_in&quot;&gt;CIATION_COPY_NONATOMIC&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;- (&lt;span class=&quot;built_in&quot;&gt;NSString&lt;/span&gt; *)labelId &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; objc_getAssociatedObject(&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;, &amp;amp;labelIdKey);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;@end&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ol&gt;
+&lt;li&gt;key：我们注意到在函数签名中key的类型const void *，这表示key仅仅是一个地址。关键字是一个void类型的指针。每一个关联的关键字必须是唯一的。通常都是会采用静态变量来作为关键字。&lt;/li&gt;
+&lt;li&gt;policy：这里的policy跟属性声明中的retain、assign、copy是一样的，不再赘述。关联策略表明了相关的对象是通过赋值，保留引用还是复制的方式进行关联的；还有这种关联是原子的还是非原子的。这里的关联策略和声明属性时的很类似。这种关联策略是通过使用预先定义好的常量来表示的。&lt;/li&gt;
+&lt;li&gt;在implement开始处的@dynamic声明。@dynamic则告诉编译器，编译阶段不用为我生成setter与getter，在runtime我已经自己实现了setter与getter。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;hr&gt;
+&lt;h3 id=&quot;延伸阅读&quot;&gt;&lt;a href=&quot;#延伸阅读&quot; class=&quot;headerlink&quot; title=&quot;延伸阅读&quot;&gt;&lt;/a&gt;延伸阅读&lt;/h3&gt;&lt;h3 id=&quot;关联对象相关的BlocksKit&quot;&gt;&lt;a href=&quot;#关联对象相关的BlocksKit&quot; class=&quot;headerlink&quot; title=&quot;关联对象相关的BlocksKit&quot;&gt;&lt;/a&gt;关联对象相关的BlocksKit&lt;/h3&gt;&lt;p&gt;BlocksKit是对Cocoa Touch Block编程更进一步的支持，它简化了Block编程，发挥Block的相关优势，让更多UIKit类支持Block式编程。&lt;/p&gt;
+&lt;p&gt;详细了解blockskit参见&lt;a href=&quot;http://blog.csdn.net/cshun1990/article/details/45462031&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;BlocksKit源码分析&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;关联对象相关的BlocksKit是对objc_setAssociatedObject、objc_getAssociatedObject、objc_removeAssociatedObjects这几个原生关联对象函数的封装。主要是封装其其内存管理语义。&lt;/p&gt;
+&lt;p&gt;部分函数声明如下：&lt;/p&gt;
+&lt;figure class=&quot;highlight obj-c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;//@interface NSObject (BKAssociatedObjects)&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;//以OBJC_ASSOCIATION_RETAIN_NONATOMIC方式绑定关联对象&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)bk_associateValue:(&lt;span class=&quot;keyword&quot;&gt;id&lt;/span&gt;)value withKey:(&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt; *)key;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;//以OBJC_ASSOCIATION_COPY_NONATOMIC方式绑定关联对象&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)bk_associateCopyOfValue:(&lt;span class=&quot;keyword&quot;&gt;id&lt;/span&gt;)value withKey:(&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt; *)key;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;//以OBJC_ASSOCIATION_RETAIN方式绑定关联对象&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)bk_atomicallyAssociateValue:(&lt;span class=&quot;keyword&quot;&gt;id&lt;/span&gt;)value withKey:(&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt; *)key;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;//以OBJC_ASSOCIATION_COPY方式绑定关联对象&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)bk_atomicallyAssociateCopyOfValue:(&lt;span class=&quot;keyword&quot;&gt;id&lt;/span&gt;)value withKey:(&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt; *)key;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;//弱绑定&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)bk_weaklyAssociateValue:(__autoreleasing &lt;span class=&quot;keyword&quot;&gt;id&lt;/span&gt;)value withKey:(&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt; *)key;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;comment&quot;&gt;//删除所有绑定的关联对象&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)bk_removeAllAssociatedObjects;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;除了弱绑定以外，其它BlocksKit函数都是简单封装。弱绑定有点扩展关联对象原生语义的感觉。&lt;/p&gt;
+&lt;figure class=&quot;highlight obj-c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;@interface&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;_BKWeakAssociatedObject&lt;/span&gt; : &lt;span class=&quot;title&quot;&gt;NSObject&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;@property&lt;/span&gt; (&lt;span class=&quot;keyword&quot;&gt;nonatomic&lt;/span&gt;, &lt;span class=&quot;keyword&quot;&gt;weak&lt;/span&gt;) &lt;span class=&quot;keyword&quot;&gt;id&lt;/span&gt; value;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;@end&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight obj-c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)bk_weaklyAssociateValue:(__autoreleasing &lt;span class=&quot;keyword&quot;&gt;id&lt;/span&gt;)value withKey:(&lt;span class=&quot;keyword&quot;&gt;const&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt; *)key&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    _BKWeakAssociatedObject *assoc = objc_getAssociatedObject(&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;, key);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; (!assoc) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        assoc = [_BKWeakAssociatedObject new];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;comment&quot;&gt;//做一个_BKWeakAssociatedObject对象中间层&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;comment&quot;&gt;//以非原子持有的方式绑定一个_BKWeakAssociatedObject对象&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;comment&quot;&gt;//_BKWeakAssociatedObject该对象又有真实对象的弱引用&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        [&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt; bk_associateValue:assoc withKey:key];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;//_BKWeakAssociatedObject的weak property设置为真正应该关联的对象&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    assoc.value = value;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;从以上实现代码可以看出，所谓弱绑定实际上是在关联对象之间做了一个中间层，让本对象以OBJC_ASSOCIATION_RETAIN_NONATOMIC的形式去关联中间层（_BKWeakAssociatedObject），而中间层又以weak property的形式去存储真正关联对象的指针。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;我们知道，使用Category可以很方便地为现有的类增加方法，但却无法直接增加实例变量。不过从Mac OS X v10.6开始，系统提供了Associative References，这个问题就很容易解决了。这种方法也就是所谓的关联(association)，我们可以在runtime期间动态地添加任意多的属性，并且随时读取。
+    
+    </summary>
+    
+    
+      <category term="runtime" scheme="http://yoursite.com/tags/runtime/"/>
+    
+      <category term="基础+" scheme="http://yoursite.com/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>block的一些基础</title>
+    <link href="http://yoursite.com/2015/09/29/block%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9F%BA%E7%A1%80/"/>
+    <id>http://yoursite.com/2015/09/29/block的一些基础/</id>
+    <published>2015-09-29T11:56:56.000Z</published>
+    <updated>2015-10-03T09:31:15.000Z</updated>
+    
+    <content type="html">&lt;p&gt;在异步编程时我们经常进行函数回调，由于函数调用是异步执行的，我们如果想让一个操作执行完之后执行另一个函数，则无法按照正常代码书写顺序进行编程，因为我们无法获知前一个方法什么时候执行结束，此时我们经常会用到委托或者代码块（Block）。Block就是一个函数体（匿名函数），它是ObjC对于闭包的实现，在块状中我们可以持有或引用局部变量，同时利用Block你可以将一个操作作为一个参数进行传递（是不是想起了C语言中的函数指针）。&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&quot;block定义&quot;&gt;&lt;a href=&quot;#block定义&quot; class=&quot;headerlink&quot; title=&quot;block定义&quot;&gt;&lt;/a&gt;block定义&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;Block类型定义：&lt;font color=&quot;#EF4700&quot;&gt;&lt;strong&gt;返回值类型(^ 变量名)(参数列表)&lt;/strong&gt;&lt;/font&gt;（注意Block也是一种类型）；&lt;/li&gt;
+&lt;li&gt;Block的typedef定义：&lt;font color=&quot;#EF4700&quot;&gt;&lt;strong&gt;返回值类型(^类型名称)(参数列表)&lt;/strong&gt;&lt;/font&gt;；&lt;/li&gt;
+&lt;li&gt;Block的实现：&lt;font color=&quot;#EF4700&quot;&gt;&lt;strong&gt;^(参数列表){操作主体}&lt;/strong&gt;&lt;/font&gt;；&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&quot;block与存取变量&quot;&gt;&lt;a href=&quot;#block与存取变量&quot; class=&quot;headerlink&quot; title=&quot;block与存取变量&quot;&gt;&lt;/a&gt;block与存取变量&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;可以读取和Block pointer同一個范围的变量值&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight obj-c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; a = &lt;span class=&quot;number&quot;&gt;5&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; (^myBlock) (&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt;) = ^(&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; b) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; a + b;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;a = &lt;span class=&quot;number&quot;&gt;8&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; result = myBlock(&lt;span class=&quot;number&quot;&gt;4&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;NSLog&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;@&quot;%d&quot;&lt;/span&gt;,result);&lt;span class=&quot;comment&quot;&gt;//结果是9&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;实际上，myBlock在实现部分用到a這個变量值的时候是把a的值copy下來。所以之后a即使改变了对于myBlock里copy的值是沒有影响的&lt;/p&gt;
+&lt;figure class=&quot;highlight obj-c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;NSMutableArray&lt;/span&gt; * mutableArray = [&lt;span class=&quot;built_in&quot;&gt;NSMutableArray&lt;/span&gt; arrayWithObjects:&lt;span class=&quot;string&quot;&gt;@&quot;one&quot;&lt;/span&gt;,&lt;span class=&quot;string&quot;&gt;@&quot;two&quot;&lt;/span&gt;,&lt;span class=&quot;string&quot;&gt;@&quot;three&quot;&lt;/span&gt;,&lt;span class=&quot;literal&quot;&gt;nil&lt;/span&gt;];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt; (^myBlock1)(&lt;span class=&quot;built_in&quot;&gt;NSMutableArray&lt;/span&gt; *) = ^(&lt;span class=&quot;built_in&quot;&gt;NSMutableArray&lt;/span&gt; *array) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    [array removeLastObject];&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;myBlock1(mutableArray);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;NSLog&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;@&quot;test array %@&quot;&lt;/span&gt;, mutableArray);&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;如果這個变量的值是个pointer的話，它指到的值是可以在block里被改变。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;直接存取 static 的变量&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight obj-c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; a2 = &lt;span class=&quot;number&quot;&gt;5&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; (^myBlock2) (&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt;) = ^(&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; b) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; a2 + b;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;a2 = &lt;span class=&quot;number&quot;&gt;8&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; result2 = myBlock2(&lt;span class=&quot;number&quot;&gt;4&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;NSLog&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;@&quot;result2:%d&quot;&lt;/span&gt;,result2);&lt;span class=&quot;comment&quot;&gt;//结果是 12&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;ul&gt;
+&lt;li&gt;Block 变量&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight obj-c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;__block &lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; a3 = &lt;span class=&quot;number&quot;&gt;5&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; (^myBlock3) (&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt;) = ^(&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; b) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; a3 + b;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;a3 = &lt;span class=&quot;number&quot;&gt;8&lt;/span&gt;;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; result3 = myBlock3(&lt;span class=&quot;number&quot;&gt;4&lt;/span&gt;);&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;NSLog&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;@&quot;result3:%d&quot;&lt;/span&gt;,result3);&lt;span class=&quot;comment&quot;&gt;//结果是 12&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;在某個变量前面如果加上修饰字 __block 的話(注意block前有兩個下划线)，這個变量又叫做block variable（变量）。那在block里就可以任意修改此变量值，变量值的变化也可以知道。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;补充：&lt;/code&gt; __block 和 __weak修饰符的区别&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;__block不管是ARC还是MRC模式下都可以使用，可以修饰对象，还可以修饰基本数据类型。&lt;/li&gt;
+&lt;li&gt;__weak只能在ARC模式下使用，也只能修饰对象（NSString），不能修饰基本数据类型(int)。&lt;/li&gt;
+&lt;li&gt;__block对象可以在block中被重新赋值，__weak不可以。&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h3 id=&quot;block与引用循环&quot;&gt;&lt;a href=&quot;#block与引用循环&quot; class=&quot;headerlink&quot; title=&quot;block与引用循环&quot;&gt;&lt;/a&gt;block与引用循环&lt;/h3&gt;&lt;p&gt;retain cycle问题的根源在于Block和obj可能会互相强引用，互相retain对方，这样就导致了retain cycle，最后这个Block和obj就变成了孤岛，谁也释放不了谁。&lt;/p&gt;
+&lt;figure class=&quot;highlight obj-c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;typedef&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;(^CustomBlock)();&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;@interface&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;ViewController&lt;/span&gt; : &lt;span class=&quot;title&quot;&gt;UIViewController&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;@property&lt;/span&gt;(&lt;span class=&quot;keyword&quot;&gt;nonatomic&lt;/span&gt;,&lt;span class=&quot;keyword&quot;&gt;copy&lt;/span&gt;) CustomBlock myBlock;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;@end&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight obj-c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;_myBlock = ^() &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;built_in&quot;&gt;NSLog&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;@&quot;%@&quot;&lt;/span&gt;,&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;);&lt;span class=&quot;comment&quot;&gt;//警告self&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;直接循环引用。&lt;/p&gt;
+&lt;p&gt;ViewController –强引用——&amp;gt;_myBlock(堆block,会retain 内部引用对象变量)&lt;/p&gt;
+&lt;p&gt;_myBlock——retain———&amp;gt;self(ViewController)&lt;br&gt;&lt;br&gt;&lt;/p&gt;
+&lt;figure class=&quot;highlight obj-c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;typedef&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;(^CustomBlock)();&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;@interface&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;BlockTester&lt;/span&gt; : &lt;span class=&quot;title&quot;&gt;NSObject&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;@property&lt;/span&gt;(&lt;span class=&quot;keyword&quot;&gt;nonatomic&lt;/span&gt;,&lt;span class=&quot;keyword&quot;&gt;assign&lt;/span&gt;) &lt;span class=&quot;built_in&quot;&gt;NSInteger&lt;/span&gt; statusCode;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;@property&lt;/span&gt;(&lt;span class=&quot;keyword&quot;&gt;nonatomic&lt;/span&gt;,&lt;span class=&quot;keyword&quot;&gt;copy&lt;/span&gt;) CustomBlock myBlock;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)useBlock:(CustomBlock)block;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;@end&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight obj-c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;class&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;@interface&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;ViewController&lt;/span&gt; () &lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    BlockTester *_blockTester;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;@end&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;figure class=&quot;highlight obj-c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;_blockTester.myBlock = ^() &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;built_in&quot;&gt;NSLog&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;@&quot;%@&quot;&lt;/span&gt;,&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;);&lt;span class=&quot;comment&quot;&gt;//警告self&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;间接循环引用。&lt;/p&gt;
+&lt;p&gt;ViewController —–retain–&amp;gt; _blockTester&lt;/p&gt;
+&lt;p&gt;_blockTester ——-强引用—&amp;gt;myBlock(堆block,会retain 内部引用对象变量)&lt;/p&gt;
+&lt;p&gt;myBlock  —retain———&amp;gt;self(ViewController)&lt;br&gt;&lt;br&gt;&lt;/p&gt;
+&lt;figure class=&quot;highlight obj-c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;dispatch_async&lt;/span&gt;(dispatch_get_main_queue(), ^&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;built_in&quot;&gt;NSLog&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;@&quot;1:%@&quot;&lt;/span&gt;,&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;);&lt;span class=&quot;comment&quot;&gt;//没有警告self&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;);&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;self 并没有直接或间接的去强引用 gcd block。 可以想象 gcd block 会统一被管理在调度中心来管理，反正不是self。&lt;br&gt;&lt;br&gt;&lt;/p&gt;
+&lt;figure class=&quot;highlight obj-c&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;[_blockTester useBlock:^&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; (_blockTester.statusCode == &lt;span class=&quot;number&quot;&gt;200&lt;/span&gt;) &amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;        &lt;span class=&quot;built_in&quot;&gt;NSLog&lt;/span&gt;(&lt;span class=&quot;string&quot;&gt;@&quot;2:%@&quot;&lt;/span&gt;,&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;);&lt;span class=&quot;comment&quot;&gt;//没有警告self&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;];&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;栈block 并不会对内部引用对象变量 retain.而是直接引用对象变量地址。&lt;/p&gt;
+&lt;p&gt;这里 self 和  _blockTester 并没有对 方法参数block 做任何引用操作，block 一直存在于栈上，直到执行完毕被释放掉。&lt;/p&gt;
+&lt;p&gt;当然block 也没有对self  做任何操作，直接引用了地址。&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;喜欢block的同学，推荐了解&lt;/code&gt; &lt;a href=&quot;https://github.com/zwaldowski/BlocksKit&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;BlocksKit&lt;/a&gt;    &lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;在异步编程时我们经常进行函数回调，由于函数调用是异步执行的，我们如果想让一个操作执行完之后执行另一个函数，则无法按照正常代码书写顺序进行编程，因为我们无法获知前一个方法什么时候执行结束，此时我们经常会用到委托或者代码块（Block）。Block就是一个函数体（匿名函数），它是ObjC对于闭包的实现，在块状中我们可以持有或引用局部变量，同时利用Block你可以将一个操作作为一个参数进行传递（是不是想起了C语言中的函数指针）。
+    
+    </summary>
+    
+    
+      <category term="block" scheme="http://yoursite.com/tags/block/"/>
+    
+      <category term="基础" scheme="http://yoursite.com/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>动画基础之CALayer</title>
+    <link href="http://yoursite.com/2015/09/28/%E5%8A%A8%E7%94%BB%E5%9F%BA%E7%A1%80%E4%B9%8BCALayer/"/>
+    <id>http://yoursite.com/2015/09/28/动画基础之CALayer/</id>
+    <published>2015-09-28T11:33:11.000Z</published>
+    <updated>2015-10-03T09:31:06.000Z</updated>
+    
+    <content type="html">&lt;p&gt;之所以介绍CALayer，是因为CALayer是深入了解iOS动画开发的重要基础内容。CALayer包含在QuartzCore框架中，这是一个跨平台的框架，既可以用在iOS中又可以用在Mac OS X中。在使用Core Animation开发动画的本质就是将CALayer中的内容转化为位图从而供硬件操作，所以要熟练掌握动画操作必须先来熟悉CALayer。&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;在UIView中有一个layer属性作为根图层，根图层上可以放其他子图层，在UIView中所有能够看到的内容都包含在layer中。&lt;/p&gt;
+&lt;p&gt;在iOS中CALayer的设计主要是了为了内容展示和动画操作，CALayer本身并不包含在UIKit中，它不能响应事件。&lt;br&gt;    由于CALayer在设计之初就考虑它的动画操作功能，    CALayer很多属性在修改时都能形成动画效果，这种属性称为“隐式动画属性”。&lt;br&gt; 但是对于UIView的根图层而言属性的修改并不形成动画效果，因为很多情况下根图层更多的充当容器的做用，如果它的属性变动形成动画效果会直接影响子图层。另外，UIView的根图层创建工作完全由iOS负责完成，无法重新创建，但是可以往根图层中添加子图层或移除子图层。&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;属性&lt;/th&gt;
+&lt;th&gt;说明&lt;/th&gt;
+&lt;th style=&quot;text-align:center&quot;&gt;是否支持隐式动画&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;anchorPoint&lt;/td&gt;
+&lt;td&gt;和中心点position重合的一个点，称为“锚点”，锚点的描述是相对于x、y位置比例而言的默认在图像中心点(0.5,0.5)的位置&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;是&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;backgroundColor&lt;/td&gt;
+&lt;td&gt;图层背景颜色&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;是&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;borderColor&lt;/td&gt;
+&lt;td&gt;边框颜色&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;是&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;borderWidth&lt;/td&gt;
+&lt;td&gt;边框宽度&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;是&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;bounds&lt;/td&gt;
+&lt;td&gt;图层大小&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;是&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;contents&lt;/td&gt;
+&lt;td&gt;图层显示内容，例如可以将图片作为图层内容显示&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;是&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;contentsRect&lt;/td&gt;
+&lt;td&gt;图层显示内容的大小和位置&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;是&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;cornerRadius&lt;/td&gt;
+&lt;td&gt;圆角半径&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;是&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;doubleSided&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;图层背面是否显示，默认为YES&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;&lt;code&gt;否&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;frame&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;图层大小和位置，不支持隐式动画，所以CALayer中很少使用frame，通常使用bounds和position代替&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;&lt;code&gt;否&lt;/code&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;hidden&lt;/td&gt;
+&lt;td&gt;是否隐藏&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;是&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;mask&lt;/td&gt;
+&lt;td&gt;图层蒙版&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;是&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;maskToBounds&lt;/td&gt;
+&lt;td&gt;子图层是否剪切图层边界，默认为NO&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;是&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;opacity&lt;/td&gt;
+&lt;td&gt;透明度 ，类似于UIView的alpha&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;是&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;position&lt;/td&gt;
+&lt;td&gt;图层中心点位置，类似于UIView的center&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;是&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;shadowColor&lt;/td&gt;
+&lt;td&gt;阴影颜色&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;是&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;shadowOffset&lt;/td&gt;
+&lt;td&gt;阴影偏移量&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;是&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;shadowOpacity&lt;/td&gt;
+&lt;td&gt;阴影透明度，注意默认为0，如果设置阴影必须设置此属性&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;是&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;shadowPath&lt;/td&gt;
+&lt;td&gt;阴影的形状&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;是&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;shadowRadius&lt;/td&gt;
+&lt;td&gt;阴影模糊半径&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;是&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;sublayers&lt;/td&gt;
+&lt;td&gt;子图层&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;是&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;sublayerTransform&lt;/td&gt;
+&lt;td&gt;子图层形变&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;是&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;transform&lt;/td&gt;
+&lt;td&gt;图层形变&lt;/td&gt;
+&lt;td style=&quot;text-align:center&quot;&gt;是&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;ul&gt;
+&lt;li&gt;隐式属性动画的本质是这些属性的变动默认隐含了CABasicAnimation动画实现。&lt;/li&gt;
+&lt;li&gt;在CALayer中很少使用frame属性，因为frame本身不支持动画效果，通常使用bounds和position代替。&lt;/li&gt;
+&lt;li&gt;CALayer中透明度使用opacity表示而不是alpha；中心点使用position表示而不是center。&lt;/li&gt;
+&lt;li&gt;anchorPoint属性是图层的锚点，范围在（0~1,0~1）表示在x、y轴的比例，这个点永远可以同position（中心点）重合，当图层position固定后，调整anchorPoint即可达到调整图层显示位置的作用（因为它永远和position重合）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&quot;obj-c&quot;&gt;- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)viewDidLoad {
+    [&lt;span class=&quot;keyword&quot;&gt;super&lt;/span&gt; viewDidLoad];
+    &lt;span class=&quot;comment&quot;&gt;// Do any additional setup after loading the view, typically from a nib.&lt;/span&gt;
+    [&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt; drawCustomLayer];
+}
+
+&lt;span class=&quot;comment&quot;&gt;// 绘制图层&lt;/span&gt;
+- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)drawCustomLayer {
+    &lt;span class=&quot;built_in&quot;&gt;CGSize&lt;/span&gt; size = [&lt;span class=&quot;built_in&quot;&gt;UIScreen&lt;/span&gt; mainScreen].bounds.size;
+    &lt;span class=&quot;comment&quot;&gt;//创建图层&lt;/span&gt;
+    _layer = [[&lt;span class=&quot;built_in&quot;&gt;CALayer&lt;/span&gt; alloc] init];
+    &lt;span class=&quot;comment&quot;&gt;//设置背景颜色,由于QuartzCore是跨平台框架，无法直接使用UIColor&lt;/span&gt;
+    _layer.backgroundColor = [&lt;span class=&quot;built_in&quot;&gt;UIColor&lt;/span&gt; colorWithRed:&lt;span class=&quot;number&quot;&gt;0.657&lt;/span&gt; green:&lt;span class=&quot;number&quot;&gt;1.000&lt;/span&gt; blue:&lt;span class=&quot;number&quot;&gt;0.712&lt;/span&gt; alpha:&lt;span class=&quot;number&quot;&gt;1.000&lt;/span&gt;].CGColor;
+    &lt;span class=&quot;comment&quot;&gt;//设置中心点(中心点使用position而不是center)&lt;/span&gt;
+    _layer.position=&lt;span class=&quot;built_in&quot;&gt;CGPointMake&lt;/span&gt;(size.width/&lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;, size.height/&lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;);
+    _layer.bounds = &lt;span class=&quot;built_in&quot;&gt;CGRectMake&lt;/span&gt;(&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;, Width, Width);
+    _layer.cornerRadius = Width / &lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;;
+    &lt;span class=&quot;comment&quot;&gt;//设置阴影&lt;/span&gt;
+    _layer.shadowColor = [&lt;span class=&quot;built_in&quot;&gt;UIColor&lt;/span&gt; colorWithRed:&lt;span class=&quot;number&quot;&gt;0.765&lt;/span&gt; green:&lt;span class=&quot;number&quot;&gt;0.284&lt;/span&gt; blue:&lt;span class=&quot;number&quot;&gt;0.289&lt;/span&gt; alpha:&lt;span class=&quot;number&quot;&gt;1.000&lt;/span&gt;].CGColor;
+    _layer.shadowOffset = &lt;span class=&quot;built_in&quot;&gt;CGSizeMake&lt;/span&gt;(&lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;);
+    _layer.shadowOpacity = &lt;span class=&quot;number&quot;&gt;0.8&lt;/span&gt;;
+    &lt;span class=&quot;comment&quot;&gt;//设置锚点(永远和position重合),CGPointZero equivalent to CGPointMake(0, 0)&lt;/span&gt;
+    _layer.anchorPoint = &lt;span class=&quot;built_in&quot;&gt;CGPointMake&lt;/span&gt;(&lt;span class=&quot;number&quot;&gt;0.5&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;0.5&lt;/span&gt;);&lt;span class=&quot;comment&quot;&gt;//CGPointZero;&lt;/span&gt;
+
+    &lt;span class=&quot;comment&quot;&gt;//加到根图层&lt;/span&gt;
+    [&lt;span class=&quot;keyword&quot;&gt;self&lt;/span&gt;.view.layer addSublayer:_layer];
+}
+
+&lt;span class=&quot;comment&quot;&gt;//点击旋转（放大，缩小，平移... 通过修改position和bounds均可产生动画）&lt;/span&gt;
+- (&lt;span class=&quot;keyword&quot;&gt;void&lt;/span&gt;)touchesBegan:(&lt;span class=&quot;built_in&quot;&gt;NSSet&lt;/span&gt; *)touches withEvent:(&lt;span class=&quot;built_in&quot;&gt;UIEvent&lt;/span&gt; *)event {
+    &lt;span class=&quot;keyword&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;int&lt;/span&gt; index = &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;;
+    &lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt; (index == &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;) {
+        _layer.transform = &lt;span class=&quot;built_in&quot;&gt;CATransform3DMakeScale&lt;/span&gt;(&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;-1&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;);
+        index = &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;;
+    }
+    &lt;span class=&quot;keyword&quot;&gt;else&lt;/span&gt; {
+        _layer.transform = &lt;span class=&quot;built_in&quot;&gt;CATransform3DMakeScale&lt;/span&gt;(&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;, &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;);
+        index = &lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;;
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;当点击屏幕时会有旋转动画，在点击屏幕的时候修改图层的属性，这些属性的变动默认隐含了CABasicAnimation动画实现。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;之所以介绍CALayer，是因为CALayer是深入了解iOS动画开发的重要基础内容。CALayer包含在QuartzCore框架中，这是一个跨平台的框架，既可以用在iOS中又可以用在Mac OS X中。在使用Core Animation开发动画的本质就是将CALayer中的内容转化为位图从而供硬件操作，所以要熟练掌握动画操作必须先来熟悉CALayer。
+    
+    </summary>
+    
+    
+      <category term="基础" scheme="http://yoursite.com/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="动画" scheme="http://yoursite.com/tags/%E5%8A%A8%E7%94%BB/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>NSString内存相关特性strong、copy</title>
+    <link href="http://yoursite.com/2015/09/20/NSString%E5%86%85%E5%AD%98%E7%9B%B8%E5%85%B3%E7%89%B9%E6%80%A7strong%E3%80%81copy/"/>
+    <id>http://yoursite.com/2015/09/20/NSString内存相关特性strong、copy/</id>
+    <published>2015-09-20T13:55:29.000Z</published>
+    <updated>2015-10-03T09:31:29.000Z</updated>
+    
+    <content type="html">&lt;p&gt;在声明一个NSString属性时，对于其内存相关特性，通常有两种选择( &lt;strong&gt;基于ARC环境&lt;/strong&gt; )：strong与copy。大部分的时候NSString的属性都是copy，那copy与strong的情况下到底有什么区别呢？&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;示例&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;我们定义一个类，并为其声明两个字符串属性，如下所示：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;@property (nonatomic, strong) NSString *strongString;
+@property (nonatomic, copy) NSString *copyedString;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;上面的代码声明了两个字符串属性，其中一个内存特性是strong，一个是copy。下面我们来看看它们的区别。&lt;/p&gt;
+&lt;p&gt;首先，我们用一个不可变字符串来为这两个属性赋值，&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;- (void)stringTest {
+    NSString *string = [NSString stringWithFormat:@&amp;quot;test&amp;quot;];
+    self.strongString = string;
+    self.copyedString = string;
+    NSLog(@&amp;quot;原字符串:%p %p %@&amp;quot;,string,&amp;amp;string,string);
+    NSLog(@&amp;quot;strongString:%p %p %@&amp;quot;,_strongString,&amp;amp;_strongString,_strongString);
+    NSLog(@&amp;quot;copyedString:%p %p %@&amp;quot;,_copyedString,&amp;amp;_copyedString,_copyedString);
+    //改变string
+    string = @&amp;quot;123&amp;quot;;
+    NSLog(@&amp;quot;原字符串:%p %p %@&amp;quot;,string,&amp;amp;string,string);
+    NSLog(@&amp;quot;strongString:%p %p %@&amp;quot;,_strongString,&amp;amp;_strongString,_strongString);
+    NSLog(@&amp;quot;copyedString:%p %p %@&amp;quot;,_copyedString,&amp;amp;_copyedString,_copyedString);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;其输出结果是：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;原字符串:0x7473657445 0x7fff5fbff7d8 test
+strongString:0x7473657445 0x100206d78 test
+copyedString:0x7473657445 0x100206d80 test
+
+原字符串:0x100005260 0x7fff5fbff7d8 123
+strongString:0x7473657445 0x100206d78 test
+copyedString:0x7473657445 0x100206d80 test                        
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;我们要以看到，这种情况下，不管是strong还是copy属性的对象，其指向的地址都是同一个，即为string指向的地址。但此时改变string值，实际改变了string指向的地址，strongString、copyedString任指向原地址，显示源地址内容“test”。&lt;/p&gt;
+&lt;p&gt;接下来，我们把string由不可变改为可变对象，看看会是什么结果。即将下面这一句&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;- (void)mutableStringTest {
+    NSMutableString *string = [NSMutableString stringWithFormat:@&amp;quot;test&amp;quot;];
+    self.strongString = string;
+    self.copyedString = string;
+    NSLog(@&amp;quot;原字符串:%p %p %@&amp;quot;,string,&amp;amp;string,string);
+    NSLog(@&amp;quot;strongString:%p %p %@&amp;quot;,_strongString,&amp;amp;_strongString,_strongString);
+    NSLog(@&amp;quot;copyedString:%p %p %@&amp;quot;,_copyedString,&amp;amp;_copyedString,_copyedString);
+    //改变string
+    [string appendString:@&amp;quot;123&amp;quot;];
+    NSLog(@&amp;quot;原字符串:%p %p %@&amp;quot;,string,&amp;amp;string,string);
+    NSLog(@&amp;quot;strongString:%p %p %@&amp;quot;,_strongString,&amp;amp;_strongString,_strongString);
+    NSLog(@&amp;quot;copyedString:%p %p %@&amp;quot;,_copyedString,&amp;amp;_copyedString,_copyedString);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;其输出结果是：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;原字符串:0x100114cd0 0x7fff5fbff7d8 test
+strongString:0x100114cd0 0x100106ef8 test
+copyedString:0x7473657445 0x100106f00 test
+
+原字符串:0x100114cd0 0x7fff5fbff7d8 test123
+strongString:0x100114cd0 0x100106ef8 test123
+copyedString:0x7473657445 0x100106f00 test
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;此时，我们如果去修改string字符串的话，因为_strongString与string是指向同一对象，所以_strongString的值也会跟随着改变(&lt;code&gt;需要注意的是，此时_strongString的类型实际上是NSMutableString，而不是NSString&lt;/code&gt;)；可以看到：而_copyedString是指向另一个对象的，所以并不会改变。&lt;/p&gt;
+&lt;p&gt;&lt;br&gt;&lt;/p&gt;
+&lt;font size=&quot;4&quot; color=&quot;green&quot;&gt;结论&lt;/font&gt;
+
+&lt;p&gt;而上面的例子可以看出，当源字符串是NSString时，由于字符串是不可变的，所以，不管是strong还是copy属性的对象，都是指向源对象，copy操作只是做了次浅拷贝。&lt;/p&gt;
+&lt;p&gt;当源字符串是NSMutableString时，strong属性只是增加了源字符串的引用计数，而copy属性则是对源字符串做了次深拷贝，产生一个新的对象，且copy属性对象指向这个新的对象。另外需要注意的是，这个copy属性对象的类型始终是NSString，而不是NSMutableString，因此其是不可变的。&lt;/p&gt;
+&lt;p&gt;所以，在声明NSString属性时，到底是选择strong还是copy，可以根据实际情况来定。不过，一般我们将对象声明为NSString时，都不希望它改变，所以大多数情况下，我们建议用copy，以免因可变字符串的修改导致的一些非预期问题。&lt;/p&gt;
+&lt;p&gt;比如声明的一个NSString *str变量，然后把一个NSMutableString *mStr变量的赋值给它了，如果要求str跟着mStr变化，那么就用retain;如果str不能跟着mStr一起变化，那就用copy。而对于要把NSString类型的字符串赋值给str，那两都没啥区别。不会影响安全性，内存管理也一样。&lt;/p&gt;
+&lt;p&gt;关于字符串的内存管理，还有些有意思的东西，可以参考 &lt;a href=&quot;http://blog.cnbluebox.com/blog/2014/04/16/nsstringte-xing-fen-xi-xue-xi/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;NSString特性分析学习&lt;/a&gt;。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;在声明一个NSString属性时，对于其内存相关特性，通常有两种选择( &lt;strong&gt;基于ARC环境&lt;/strong&gt; )：strong与copy。大部分的时候NSString的属性都是copy，那copy与strong的情况下到底有什么区别呢？
+    
+    </summary>
+    
+    
+      <category term="NSString" scheme="http://yoursite.com/tags/NSString/"/>
+    
+      <category term="内存" scheme="http://yoursite.com/tags/%E5%86%85%E5%AD%98/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>iOS开发ARC内存管理</title>
+    <link href="http://yoursite.com/2015/09/19/iOS%E5%BC%80%E5%8F%91ARC%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/"/>
+    <id>http://yoursite.com/2015/09/19/iOS开发ARC内存管理/</id>
+    <published>2015-09-19T13:43:52.000Z</published>
+    <updated>2015-10-03T09:31:22.000Z</updated>
+    
+    <content type="html">&lt;p&gt;&lt;code&gt;ARC&lt;/code&gt;  &lt;code&gt;内存管理&lt;/code&gt;   &lt;/p&gt;
+&lt;p&gt;在了解ARC之前，先了解OC内存管理里面的&lt;code&gt;对象生命周期&lt;/code&gt;、&lt;code&gt;引用计数&lt;/code&gt;、&lt;code&gt;对象所有权&lt;/code&gt; ，（自行查阅相关资料）&lt;/p&gt;
+&lt;p&gt;本文简单介绍iOS开发中ARC(Automatic Reference Counting，&lt;code&gt;自动引用计数&lt;/code&gt;)内存管理的一些要点，所以不会讲的很全面。详细的关于ARC的信息请参见苹果的！&lt;a href=&quot;https://developer.apple.com/library/ios/releasenotes/ObjectiveC/RN-TransitioningToARC/Introduction/Introduction.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;官方文档&lt;/a&gt;与网上的其他教程） &lt;a id=&quot;more&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h3 id=&quot;本文的主要内容：&quot;&gt;&lt;a href=&quot;#本文的主要内容：&quot; class=&quot;headerlink&quot; title=&quot;本文的主要内容：&quot;&gt;&lt;/a&gt;本文的主要内容：&lt;/h3&gt;&lt;ul&gt;
+&lt;li&gt;ARC的本质 &lt;/li&gt;
+&lt;li&gt;__strong, __weak&lt;/li&gt;
+&lt;li&gt;ARC与Toll-Free Bridging&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;ARC的本质&quot;&gt;&lt;a href=&quot;#ARC的本质&quot; class=&quot;headerlink&quot; title=&quot;ARC的本质&quot;&gt;&lt;/a&gt;ARC的本质&lt;/h3&gt;&lt;p&gt;先引用官方的关于ARC的一句描述： &lt;/p&gt;
+&lt;p&gt;Automatic Reference Counting (ARC) is a compiler-level feature that simplifies the process of managing object lifetimes (memory management) in Cocoa applications. &lt;/p&gt;
+&lt;p&gt;ARC是编译器（时）特性，而不是运行时特性（关于运行时&lt;code&gt;runtime&lt;/code&gt;是深入学习iOS的重要内容，有兴趣的同学可以自己深入学习） &lt;/p&gt;
+&lt;p&gt;ARC只是相对于MRC的改进，本质上依然是通过管理对象的引用计数。 &lt;/p&gt;
+&lt;p&gt;如果你启用了ARC，只管像平常那样按需分配并使用对象，编译器会帮你插入retain和release语句。&lt;/p&gt;
+&lt;h3 id=&quot;strong-weak&quot;&gt;&lt;a href=&quot;#strong-weak&quot; class=&quot;headerlink&quot; title=&quot;__strong, __weak&quot;&gt;&lt;/a&gt;__strong, __weak&lt;/h3&gt;&lt;p&gt;&lt;strong&gt;__strong&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;表示引用为强引用。对应在定义property时的”strong”。所有对象只有当没有任何一个强引用指向时，才会被释放。&lt;/p&gt;
+&lt;p&gt;注意：如果在声明引用时不加修饰符，那么引用将默认是强引用。当需要释放强引用指向的对象时，需要将强引用置nil。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;__weak&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;表示引用为弱引用。对应在定义property时用的”weak”。弱引用不会影响对象的释放，即只要对象没有任何强引用指向，该对象依然会被释放。不过好在，对象在被释放的同时，指向它的弱引用会自动被置nil，这个技术叫zeroing weak pointer。这样有效得防止无效指针、野指针的产生。__weak一般用在block、delegate关系中防止循环引用或者用来修饰指向由Interface Builder编辑与生成的UI控件。&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;@property (nonatomic,strong) NSString *myString;&lt;/p&gt;
+&lt;p&gt;NSString __strong *myString;&lt;/p&gt;
+&lt;p&gt;__strong关键字和strong特性不可同时使用，内存管理的关键字和特性是不能一起使用的，两者相互排斥。&lt;br&gt;&lt;/p&gt;
+&lt;p&gt;苹果的文档中明确地写道：&lt;/p&gt;
+&lt;p&gt;You should decorate variables correctly. When using qualifiers in an object variable declaration,&lt;/p&gt;
+&lt;p&gt;the correct format is:&lt;/p&gt;
+&lt;p&gt;ClassName * qualifier variableName;&lt;/p&gt;
+&lt;p&gt;按照这个说明，要定义一个weak型的NSString引用，它的写法应该是：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;NSString * __weak str = @&amp;quot;hehe&amp;quot;; // 正确！
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;而不应该是：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;__weak NSString *str = @&amp;quot;hehe&amp;quot;;  // 不推荐！
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;我相信很多人都和我一样，从开始用ARC就一直用上面那种错误的写法。&lt;/p&gt;
+&lt;p&gt;那这里就有疑问了，既然文档说是错误的，为啥编译器不报错呢？文档又解释道：&lt;/p&gt;
+&lt;p&gt;Other variants are technically incorrect but are “forgiven” by the compiler. To understand the issue, see&lt;a href=&quot;http://cdecl.org/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;http://cdecl.org/&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;好吧，看来是考虑到很多人会用错，所以在编译器这边贴心地帮我们忽略并处理掉了这个错误。&lt;/p&gt;
+&lt;h3 id=&quot;ARC与Toll-Free-Bridging&quot;&gt;&lt;a href=&quot;#ARC与Toll-Free-Bridging&quot; class=&quot;headerlink&quot; title=&quot;ARC与Toll-Free Bridging&quot;&gt;&lt;/a&gt;ARC与Toll-Free Bridging&lt;/h3&gt;&lt;p&gt;ARC只对可保留的对象指针有效。例如：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;代码块指针&lt;/li&gt;
+&lt;li&gt;Objective-C指针&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;例如CoreFoundation指针，CF指针由人工管理，手动的CFRetain和CFRelease来管理，注，CF中没有autorelease。&lt;/p&gt;
+&lt;p&gt;CocoaFoundation指针与CoreFoundation指针转换，需要考虑的是所指向对象所有权的归属。ARC提供了3个修饰符来管理。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;__bridge，什么也不做，仅仅是转换。此种情况下：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;从Cocoa转换到Core，需要人工CFRetain，否则，Cocoa指针释放后， 传出去的指针则无效。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;从Core转换到Cocoa，需要人工CFRelease，否则，Cocoa指针释放后，对象引用计数仍为1，不会被销毁。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;__bridge_retained，转换后自动调用CFRetain，即帮助自动解决上述i的情形。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;__bridge_transfer，转换后自动调用CFRelease，即帮助自动解决上述ii的情形。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;code&gt;ARC&lt;/code&gt;  &lt;code&gt;内存管理&lt;/code&gt;   &lt;/p&gt;
+&lt;p&gt;在了解ARC之前，先了解OC内存管理里面的&lt;code&gt;对象生命周期&lt;/code&gt;、&lt;code&gt;引用计数&lt;/code&gt;、&lt;code&gt;对象所有权&lt;/code&gt; ，（自行查阅相关资料）&lt;/p&gt;
+&lt;p&gt;本文简单介绍iOS开发中ARC(Automatic Reference Counting，&lt;code&gt;自动引用计数&lt;/code&gt;)内存管理的一些要点，所以不会讲的很全面。详细的关于ARC的信息请参见苹果的！&lt;a href=&quot;https://developer.apple.com/library/ios/releasenotes/ObjectiveC/RN-TransitioningToARC/Introduction/Introduction.html&quot;&gt;官方文档&lt;/a&gt;与网上的其他教程）
+    
+    </summary>
+    
+    
+      <category term="内存" scheme="http://yoursite.com/tags/%E5%86%85%E5%AD%98/"/>
+    
+      <category term="基础" scheme="http://yoursite.com/tags/%E5%9F%BA%E7%A1%80/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>从iOS的内存说起</title>
+    <link href="http://yoursite.com/2015/09/19/%E4%BB%8EiOS%E7%9A%84%E5%86%85%E5%AD%98%E8%AF%B4%E8%B5%B7/"/>
+    <id>http://yoursite.com/2015/09/19/从iOS的内存说起/</id>
+    <published>2015-09-19T08:30:22.000Z</published>
+    <updated>2015-10-03T09:33:24.000Z</updated>
+    
+    <content type="html">&lt;h3 id=&quot;当启动一个app&quot;&gt;&lt;a href=&quot;#当启动一个app&quot; class=&quot;headerlink&quot; title=&quot;当启动一个app&quot;&gt;&lt;/a&gt;当启动一个app&lt;/h3&gt;&lt;p&gt;当启动一个app程序，系统会把开启的那个app程序从ROM里面拷贝到内存（RAM）&lt;em&gt;&lt;code&gt;RAM的访问速度要远高内存卡(Flash)或ROM&lt;/code&gt;&lt;/em&gt;，然后从内存里面执行。&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h2 id=&quot;内存分区-可以分为5个区&quot;&gt;&lt;a href=&quot;#内存分区-可以分为5个区&quot; class=&quot;headerlink&quot; title=&quot;内存分区:可以分为5个区&quot;&gt;&lt;/a&gt;内存分区:可以分为5个区&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;栈区&lt;/strong&gt;（stack）— 这个一般由编译器操作，会存一些局部变量，函数跳转地址，现场保护等等&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;堆区&lt;/strong&gt;（heap） — 一般由程序员管理，比如alloc申请内存&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;全局区&lt;/strong&gt;（静态区）（static）—，全局变量和静态变量的存储是放在一块的，初始化的全局变量和静态变量在一块区域， 未初始化的全局变量和未初始化的静态变量在相邻的另一块区域。 - 程序结束后有系统释放。注意：全局区又可分为未初始化全局区：.bss段 和 初始化全局区：data段。举例：int a;未初始化的。int a = 10;已初始化的。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;常量区&lt;/strong&gt; — 常量字符串就是放在这里的&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;代码区&lt;/strong&gt; — 存放代码，即app程序会拷贝到这里&lt;em&gt;&lt;code&gt;app程序从ROM里面拷贝到内存（RAM）&lt;/code&gt;&lt;/em&gt;。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;编程中内存相关&quot;&gt;&lt;a href=&quot;#编程中内存相关&quot; class=&quot;headerlink&quot; title=&quot;编程中内存相关&quot;&gt;&lt;/a&gt;编程中内存相关&lt;/h3&gt;&lt;font color=&quot;#E95044&quot;&gt;当一个app启动后，代码区，常量区，全局区大小已固定，因此指向这些区的指针不会产生崩溃性的错误。而堆区和栈区是时时刻刻变化的（堆的创建销毁，栈的弹入弹出），所以当使用一个指针指向这两个区里面的内存时，一定要注意内存是否已经被释放，否则会产生程序崩溃（编程中很常见）。&lt;/font&gt;
+
+
+&lt;h3 id=&quot;参考图&quot;&gt;&lt;a href=&quot;#参考图&quot; class=&quot;headerlink&quot; title=&quot;参考图&quot;&gt;&lt;/a&gt;参考图&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;/memery.png&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;当启动一个app&quot;&gt;&lt;a href=&quot;#当启动一个app&quot; class=&quot;headerlink&quot; title=&quot;当启动一个app&quot;&gt;&lt;/a&gt;当启动一个app&lt;/h3&gt;&lt;p&gt;当启动一个app程序，系统会把开启的那个app程序从ROM里面拷贝到内存（RAM）&lt;em&gt;&lt;code&gt;RAM的访问速度要远高内存卡(Flash)或ROM&lt;/code&gt;&lt;/em&gt;，然后从内存里面执行。
+    
+    </summary>
+    
+    
+      <category term="内存" scheme="http://yoursite.com/tags/%E5%86%85%E5%AD%98/"/>
+    
+  </entry>
+  
+</feed>
