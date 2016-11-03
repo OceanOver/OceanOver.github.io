@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>react学习之组件生命周期 | OceanOver&#39;Blog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="概述学习iOS时我们会去研究视图控制器的生命周期，理解控制器从创建到销毁。联想到React，其组件也有从创建到销毁的过程。在组件的生命周期中，随着组件props或state的改变，其DOM表现形式也会有所变化。在生命周期的不同阶段，React提供了不同的处理函数使我们能够实现对组件整个生命周期内的控制和处理。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="react学习之组件生命周期">
+<meta property="og:url" content="http://yoursite.com/2016/11/03/react学习之组件生命周期/index.html">
+<meta property="og:site_name" content="OceanOver'Blog">
+<meta property="og:description" content="概述学习iOS时我们会去研究视图控制器的生命周期，理解控制器从创建到销毁。联想到React，其组件也有从创建到销毁的过程。在组件的生命周期中，随着组件props或state的改变，其DOM表现形式也会有所变化。在生命周期的不同阶段，React提供了不同的处理函数使我们能够实现对组件整个生命周期内的控制和处理。">
+<meta property="og:updated_time" content="2016-11-03T04:11:18.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="react学习之组件生命周期">
+<meta name="twitter:description" content="概述学习iOS时我们会去研究视图控制器的生命周期，理解控制器从创建到销毁。联想到React，其组件也有从创建到销毁的过程。在组件的生命周期中，随着组件props或state的改变，其DOM表现形式也会有所变化。在生命周期的不同阶段，React提供了不同的处理函数使我们能够实现对组件整个生命周期内的控制和处理。">
+  
+    <link rel="alternative" href="/atom.xml" title="OceanOver&#39;Blog" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+	<header id="header" class="inner">
+		<a href="/" class="profilepic">
+			
+			<img lazy-src="/yt.png" class="js-avatar">
+			
+		</a>
+
+		<hgroup>
+		  <h1 class="header-author"><a href="/">OceanOver</a></h1>
+		</hgroup>
+
+		
+
+		
+			<div class="switch-btn">
+				<div class="icon">
+					<div class="icon-ctn">
+						<div class="icon-wrap icon-house" data-idx="0">
+							<div class="birdhouse"></div>
+							<div class="birdhouse_holes"></div>
+						</div>
+						<div class="icon-wrap icon-ribbon hide" data-idx="1">
+							<div class="ribbon"></div>
+						</div>
+						
+						<div class="icon-wrap icon-link hide" data-idx="2">
+							<div class="loopback_l"></div>
+							<div class="loopback_r"></div>
+						</div>
+						
+						
+						<div class="icon-wrap icon-me hide" data-idx="3">
+							<div class="user"></div>
+							<div class="shoulder"></div>
+						</div>
+						
+					</div>
+					
+				</div>
+				<div class="tips-box hide">
+					<div class="tips-arrow"></div>
+					<ul class="tips-inner">
+						<li>菜单</li>
+						<li>标签</li>
+						
+						<li>友情链接</li>
+						
+						
+						<li>关于我</li>
+						
+					</ul>
+				</div>
+			</div>
+		
+
+		<div class="switch-area">
+			<div class="switch-wrap">
+				<section class="switch-part switch-part1">
+					<nav class="header-menu">
+						<ul>
+						
+							<li><a href="/">主页</a></li>
+				        
+							<li><a href="/archives">所有文章</a></li>
+				        
+						</ul>
+					</nav>
+					<nav class="header-nav">
+						<div class="social">
+							
+								<a class="github" target="_blank" href="https://github.com/OceanOver" title="github">github</a>
+					        
+								<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+					        
+						</div>
+					</nav>
+				</section>
+				
+				
+				<section class="switch-part switch-part2">
+					<div class="widget tagcloud" id="js-tagcloud">
+						<a href="/tags/NSString/" style="font-size: 10px;">NSString</a> <a href="/tags/React/" style="font-size: 10px;">React</a> <a href="/tags/block/" style="font-size: 10px;">block</a> <a href="/tags/runtime/" style="font-size: 10px;">runtime</a> <a href="/tags/内存/" style="font-size: 20px;">内存</a> <a href="/tags/动画/" style="font-size: 10px;">动画</a> <a href="/tags/基础/" style="font-size: 20px;">基础</a> <a href="/tags/基础/" style="font-size: 10px;">基础+</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/技巧/" style="font-size: 10px;">技巧</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a>
+					</div>
+				</section>
+				
+				
+				
+				<section class="switch-part switch-part3">
+					<div id="js-friends">
+					
+			          <a target="_blank" class="main-nav-link switch-friends-link" href="http://litten.github.io/">Hexo主题Yilia</a>
+			        
+			        </div>
+				</section>
+				
+
+				
+				
+				<section class="switch-part switch-part4">
+				
+					<div id="js-aboutme">不积跬步，无以至千里；不积小流，无以成江海。</div>
+				</section>
+				
+			</div>
+		</div>
+	</header>				
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+  	<div class="overlay">
+  		<div class="slider-trigger"></div>
+  		<h1 class="header-author js-mobile-header hide">OceanOver</h1>
+  	</div>
+	<div class="intrude-less">
+		<header id="header" class="inner">
+			<div class="profilepic">
+				<img lazy-src="/yt.png" class="js-avatar">
+			</div>
+			<hgroup>
+			  <h1 class="header-author">OceanOver</h1>
+			</hgroup>
+			
+			<nav class="header-menu">
+				<ul>
+				
+					<li><a href="/">主页</a></li>
+		        
+					<li><a href="/archives">所有文章</a></li>
+		        
+		        <div class="clearfix"></div>
+				</ul>
+			</nav>
+			<nav class="header-nav">
+				<div class="social">
+					
+						<a class="github" target="_blank" href="https://github.com/OceanOver" title="github">github</a>
+			        
+						<a class="rss" target="_blank" href="/atom.xml" title="rss">rss</a>
+			        
+				</div>
+			</nav>
+		</header>				
+	</div>
+</nav>
+      <div class="body-wrap"><article id="post-react学习之组件生命周期" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/11/03/react学习之组件生命周期/" class="article-date">
+  	<time datetime="2016-11-03T03:51:18.000Z" itemprop="datePublished">2016-11-03</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      react学习之组件生命周期
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/React/">React</a></li></ul>
+	</div>
+
+        
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>学习iOS时我们会去研究视图控制器的生命周期，理解控制器从创建到销毁。联想到React，其组件也有从创建到销毁的过程。在组件的生命周期中，随着组件props或state的改变，其DOM表现形式也会有所变化。在生命周期的不同阶段，React提供了不同的处理函数使我们能够实现对组件整个生命周期内的控制和处理。<a id="more"></a></p>
+<p>React组件的生命周期分为：创建期、存在期、销毁&amp;清理期，对应组件生命周期里的三个状态：</p>
+<ul>
+<li>Mounting：已插入真实 DOM</li>
+<li>Updating：正在被重新渲染</li>
+<li>Unmounting：已移出真实 DOM</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> App = React.createClass(&#123;</span><br><span class="line">  componentWillMount: <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 初始化期，组件加载前调用</span></span><br><span class="line">  &#125;,</span><br><span class="line">  componentWillUpdate: <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 存在期，组件状态改变后重新渲染前调用</span></span><br><span class="line">  &#125;,</span><br><span class="line">  render: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// 初始化期或存在期调用</span></span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      <span class="xml"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>itbilu.com<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span></span><br><span class="line">    )</span><br><span class="line">  &#125;,</span><br><span class="line">  componentWillUnmount: <span class="function"><span class="keyword">function</span> (<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="comment">// 销毁&amp;清理期调用</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>React 为每个状态都提供了两种处理函数，will 函数在进入状态之前调用，did 函数在进入状态之后调用，三种状态共计五种处理函数。</p>
+<ul>
+<li>componentWillMount()</li>
+<li>componentDidMount()</li>
+<li>componentWillUpdate(object nextProps, object nextState)</li>
+<li>componentDidUpdate(object prevProps, object prevState)</li>
+<li>componentWillUnmount()</li>
+</ul>
+<p>此外，React 还提供两种特殊状态的处理函数。</p>
+<ul>
+<li>componentWillReceiveProps(object nextProps)：已加载组件收到新的参数时调用</li>
+<li>shouldComponentUpdate(object nextProps, object nextState)：组件判断是否重新渲染时调用（灵活地利用该处理函数可以优化性能）</li>
+</ul>
+<h3 id="组件创建"><a href="#组件创建" class="headerlink" title="组件创建"></a>组件创建</h3><p>当组件被创建、首次渲染时，都会有一系列方法会被调用。</p>
+<p>当首次创建一个组件时依次执行：</p>
+<ul>
+<li>getDefaultProps</li>
+<li>getInitialState</li>
+<li>componentWillMount</li>
+<li>render</li>
+<li>componentDidMount</li>
+</ul>
+<h4 id="getDefaultProps"><a href="#getDefaultProps" class="headerlink" title="getDefaultProps"></a>getDefaultProps</h4><p>该方法只在首次创建实例被调用一次，一般用于顶级组件（没有父组件的组件）进行处理，实例化组件时这个方法会对返回默认的props属性。</p>
+<h4 id="getInitialState"><a href="#getInitialState" class="headerlink" title="getInitialState"></a>getInitialState</h4><p>实例化组件时会被调用一次。通过这个方法，可以初始化每个实例的state。getInitialState在每次创建实例时都会被调用。</p>
+<h4 id="componentWillMount"><a href="#componentWillMount" class="headerlink" title="componentWillMount"></a>componentWillMount</h4><p>首次渲染（首次挂载）前被调用，通过这个方法可以在组件被render前最后一次修改组件的state。</p>
+<h4 id="render"><a href="#render" class="headerlink" title="render"></a>render</h4><p>render方法会创建一个虚拟DOM，其返回值可以是：null、false或React组件，只能返回一个顶级组件。React会将它和真实DOM做比较，以判断是否需要对DOM进行修改。</p>
+<h4 id="componentDidMount"><a href="#componentDidMount" class="headerlink" title="componentDidMount"></a>componentDidMount</h4><p>真实的DOM已经被渲染后该方法被调用，可以在componentDidMount方法内部通过this.getDOMNode()访问到它。当需要访问原始DOM属性，可以将这些操作挂载到这个方法上。</p>
+<h3 id="存在期"><a href="#存在期" class="headerlink" title="存在期"></a>存在期</h3><p>在这个时期，组件已经渲染好并且用户可以与它进行交互，用户的操作会改变组件的state，这时会有新的state流注入到组件树，这时会有一些方法会被触发。</p>
+<p>state改变后，会有以下方法会被触发：</p>
+<ul>
+<li>componentWillReceiveProps</li>
+<li>shouldComponentUpdate</li>
+<li>componentWillUpdate</li>
+<li>render</li>
+<li>componentDidUpdate</li>
+</ul>
+<h4 id="componentWillReceiveProps"><a href="#componentWillReceiveProps" class="headerlink" title="componentWillReceiveProps"></a>componentWillReceiveProps</h4><p>当组件的props属性被修改时，该方法会被调用，这时我们可以获得修改的props对象和更新的state。</p>
+<h4 id="shouldComponentUpdate"><a href="#shouldComponentUpdate" class="headerlink" title="shouldComponentUpdate"></a>shouldComponentUpdate</h4><p>该方法接收到修改的props对象和更新的state，当我们确定组件不需要重新渲染新的props或state时，可以通过该方法返回false，这样React就会跳过调用render方法及之后的componentWillUpdate和componentDidUpdate方法。</p>
+<h4 id="componentWillUpdate"><a href="#componentWillUpdate" class="headerlink" title="componentWillUpdate"></a>componentWillUpdate</h4><p>发生在组件在接收到新的props或state后，render方法进行渲染之前</p>
+<h4 id="componentDidUpdate"><a href="#componentDidUpdate" class="headerlink" title="componentDidUpdate"></a>componentDidUpdate</h4><p>与componentDidMount方法类似，这个方法使我们可以获取到已经渲染好的DOM。</p>
+<h3 id="组件销毁"><a href="#组件销毁" class="headerlink" title="组件销毁"></a>组件销毁</h3><p>当使用完一个组件时，需要将其从DOM中卸载并销毁，这时只有componentWillUnmount一个函数会被调用，通过这个方法我们可以完成一些必要的销毁和清理工作，如：清除componentDidMount中添加的任务等。</p>
+
+      
+    </div>
+    
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">iOS9和Xcode7中 Stack Views 介绍</div>
+      <strong class="article-nav-caption">></strong>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+<div class="share">
+	<!-- JiaThis Button BEGIN -->
+	<div class="jiathis_style">
+		<span class="jiathis_txt">分享到：</span>
+		<a class="jiathis_button_tsina"></a>
+		<a class="jiathis_button_cqq"></a>
+		<a class="jiathis_button_douban"></a>
+		<a class="jiathis_button_weixin"></a>
+		<a class="jiathis_button_tumblr"></a>
+		<a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jtico jtico_jiathis" target="_blank"></a>
+	</div>
+	<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js?uid=1405949716054953" charset="utf-8"></script>
+	<!-- JiaThis Button END -->
+</div>
+
+
+
+<div class="duoshuo">
+	<!-- 多说评论框 start -->
+	<div class="ds-thread" data-thread-key="react学习之组件生命周期" data-title="react学习之组件生命周期" data-url="http://yoursite.com/2016/11/03/react学习之组件生命周期/"></div>
+	<!-- 多说评论框 end -->
+	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+	<script type="text/javascript">
+	var duoshuoQuery = {short_name:"true"};
+	(function() {
+		var ds = document.createElement('script');
+		ds.type = 'text/javascript';ds.async = true;
+		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+		ds.charset = 'UTF-8';
+		(document.getElementsByTagName('head')[0] 
+		 || document.getElementsByTagName('body')[0]).appendChild(ds);
+	})();
+	</script>
+	<!-- 多说公共JS代码 end -->
+</div>
+
+
+
+
+</div>
+      <footer id="footer">
+  <div class="outer">
+    <div id="footer-info">
+    	<div class="footer-left">
+    		&copy; 2016 OceanOver
+    	</div>
+      	<div class="footer-right">
+      		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
+      	</div>
+    </div>
+  </div>
+</footer>
+    </div>
+    
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+
+<script>
+	var yiliaConfig = {
+		fancybox: true,
+		mathjax: true,
+		animate: true,
+		isHome: false,
+		isPost: true,
+		isArchive: false,
+		isTag: false,
+		isCategory: false,
+		open_in_new: false
+	}
+</script>
+<script src="https://7.url.cn/edu/jslib/comb/require-2.1.6,jquery-1.9.1.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    }
+});
+
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+
+  </div>
+</body>
+</html>

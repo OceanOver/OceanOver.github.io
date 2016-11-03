@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2016-04-23T04:23:36.000Z</updated>
+  <updated>2016-11-03T04:11:18.000Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -16,11 +16,80 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>react学习之组件生命周期</title>
+    <link href="http://yoursite.com/2016/11/03/react%E5%AD%A6%E4%B9%A0%E4%B9%8B%E7%BB%84%E4%BB%B6%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/"/>
+    <id>http://yoursite.com/2016/11/03/react学习之组件生命周期/</id>
+    <published>2016-11-03T03:51:18.000Z</published>
+    <updated>2016-11-03T04:11:18.000Z</updated>
+    
+    <content type="html">&lt;h3 id=&quot;概述&quot;&gt;&lt;a href=&quot;#概述&quot; class=&quot;headerlink&quot; title=&quot;概述&quot;&gt;&lt;/a&gt;概述&lt;/h3&gt;&lt;p&gt;学习iOS时我们会去研究视图控制器的生命周期，理解控制器从创建到销毁。联想到React，其组件也有从创建到销毁的过程。在组件的生命周期中，随着组件props或state的改变，其DOM表现形式也会有所变化。在生命周期的不同阶段，React提供了不同的处理函数使我们能够实现对组件整个生命周期内的控制和处理。&lt;a id=&quot;more&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;React组件的生命周期分为：创建期、存在期、销毁&amp;amp;清理期，对应组件生命周期里的三个状态：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Mounting：已插入真实 DOM&lt;/li&gt;
+&lt;li&gt;Updating：正在被重新渲染&lt;/li&gt;
+&lt;li&gt;Unmounting：已移出真实 DOM&lt;/li&gt;
+&lt;/ul&gt;
+&lt;figure class=&quot;highlight javascript&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;7&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;8&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;9&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;10&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;11&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;12&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;13&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;14&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;15&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;16&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;17&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; App = React.createClass(&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  componentWillMount: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;)&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;// 初始化期，组件加载前调用&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &amp;#125;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  componentWillUpdate: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;)&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;// 存在期，组件状态改变后重新渲染前调用&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &amp;#125;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  render: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; (&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;) &lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;// 初始化期或存在期调用&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; (&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;      &lt;span class=&quot;xml&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;h1&lt;/span&gt;&amp;gt;&lt;/span&gt;itbilu.com&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;h1&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    )&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &amp;#125;,&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  componentWillUnmount: &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; (&lt;span class=&quot;params&quot;&gt;&lt;/span&gt;)&lt;/span&gt;&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;    &lt;span class=&quot;comment&quot;&gt;// 销毁&amp;amp;清理期调用&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &amp;#125;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&amp;#125;);&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;React 为每个状态都提供了两种处理函数，will 函数在进入状态之前调用，did 函数在进入状态之后调用，三种状态共计五种处理函数。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;componentWillMount()&lt;/li&gt;
+&lt;li&gt;componentDidMount()&lt;/li&gt;
+&lt;li&gt;componentWillUpdate(object nextProps, object nextState)&lt;/li&gt;
+&lt;li&gt;componentDidUpdate(object prevProps, object prevState)&lt;/li&gt;
+&lt;li&gt;componentWillUnmount()&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;此外，React 还提供两种特殊状态的处理函数。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;componentWillReceiveProps(object nextProps)：已加载组件收到新的参数时调用&lt;/li&gt;
+&lt;li&gt;shouldComponentUpdate(object nextProps, object nextState)：组件判断是否重新渲染时调用（灵活地利用该处理函数可以优化性能）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id=&quot;组件创建&quot;&gt;&lt;a href=&quot;#组件创建&quot; class=&quot;headerlink&quot; title=&quot;组件创建&quot;&gt;&lt;/a&gt;组件创建&lt;/h3&gt;&lt;p&gt;当组件被创建、首次渲染时，都会有一系列方法会被调用。&lt;/p&gt;
+&lt;p&gt;当首次创建一个组件时依次执行：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;getDefaultProps&lt;/li&gt;
+&lt;li&gt;getInitialState&lt;/li&gt;
+&lt;li&gt;componentWillMount&lt;/li&gt;
+&lt;li&gt;render&lt;/li&gt;
+&lt;li&gt;componentDidMount&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&quot;getDefaultProps&quot;&gt;&lt;a href=&quot;#getDefaultProps&quot; class=&quot;headerlink&quot; title=&quot;getDefaultProps&quot;&gt;&lt;/a&gt;getDefaultProps&lt;/h4&gt;&lt;p&gt;该方法只在首次创建实例被调用一次，一般用于顶级组件（没有父组件的组件）进行处理，实例化组件时这个方法会对返回默认的props属性。&lt;/p&gt;
+&lt;h4 id=&quot;getInitialState&quot;&gt;&lt;a href=&quot;#getInitialState&quot; class=&quot;headerlink&quot; title=&quot;getInitialState&quot;&gt;&lt;/a&gt;getInitialState&lt;/h4&gt;&lt;p&gt;实例化组件时会被调用一次。通过这个方法，可以初始化每个实例的state。getInitialState在每次创建实例时都会被调用。&lt;/p&gt;
+&lt;h4 id=&quot;componentWillMount&quot;&gt;&lt;a href=&quot;#componentWillMount&quot; class=&quot;headerlink&quot; title=&quot;componentWillMount&quot;&gt;&lt;/a&gt;componentWillMount&lt;/h4&gt;&lt;p&gt;首次渲染（首次挂载）前被调用，通过这个方法可以在组件被render前最后一次修改组件的state。&lt;/p&gt;
+&lt;h4 id=&quot;render&quot;&gt;&lt;a href=&quot;#render&quot; class=&quot;headerlink&quot; title=&quot;render&quot;&gt;&lt;/a&gt;render&lt;/h4&gt;&lt;p&gt;render方法会创建一个虚拟DOM，其返回值可以是：null、false或React组件，只能返回一个顶级组件。React会将它和真实DOM做比较，以判断是否需要对DOM进行修改。&lt;/p&gt;
+&lt;h4 id=&quot;componentDidMount&quot;&gt;&lt;a href=&quot;#componentDidMount&quot; class=&quot;headerlink&quot; title=&quot;componentDidMount&quot;&gt;&lt;/a&gt;componentDidMount&lt;/h4&gt;&lt;p&gt;真实的DOM已经被渲染后该方法被调用，可以在componentDidMount方法内部通过this.getDOMNode()访问到它。当需要访问原始DOM属性，可以将这些操作挂载到这个方法上。&lt;/p&gt;
+&lt;h3 id=&quot;存在期&quot;&gt;&lt;a href=&quot;#存在期&quot; class=&quot;headerlink&quot; title=&quot;存在期&quot;&gt;&lt;/a&gt;存在期&lt;/h3&gt;&lt;p&gt;在这个时期，组件已经渲染好并且用户可以与它进行交互，用户的操作会改变组件的state，这时会有新的state流注入到组件树，这时会有一些方法会被触发。&lt;/p&gt;
+&lt;p&gt;state改变后，会有以下方法会被触发：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;componentWillReceiveProps&lt;/li&gt;
+&lt;li&gt;shouldComponentUpdate&lt;/li&gt;
+&lt;li&gt;componentWillUpdate&lt;/li&gt;
+&lt;li&gt;render&lt;/li&gt;
+&lt;li&gt;componentDidUpdate&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&quot;componentWillReceiveProps&quot;&gt;&lt;a href=&quot;#componentWillReceiveProps&quot; class=&quot;headerlink&quot; title=&quot;componentWillReceiveProps&quot;&gt;&lt;/a&gt;componentWillReceiveProps&lt;/h4&gt;&lt;p&gt;当组件的props属性被修改时，该方法会被调用，这时我们可以获得修改的props对象和更新的state。&lt;/p&gt;
+&lt;h4 id=&quot;shouldComponentUpdate&quot;&gt;&lt;a href=&quot;#shouldComponentUpdate&quot; class=&quot;headerlink&quot; title=&quot;shouldComponentUpdate&quot;&gt;&lt;/a&gt;shouldComponentUpdate&lt;/h4&gt;&lt;p&gt;该方法接收到修改的props对象和更新的state，当我们确定组件不需要重新渲染新的props或state时，可以通过该方法返回false，这样React就会跳过调用render方法及之后的componentWillUpdate和componentDidUpdate方法。&lt;/p&gt;
+&lt;h4 id=&quot;componentWillUpdate&quot;&gt;&lt;a href=&quot;#componentWillUpdate&quot; class=&quot;headerlink&quot; title=&quot;componentWillUpdate&quot;&gt;&lt;/a&gt;componentWillUpdate&lt;/h4&gt;&lt;p&gt;发生在组件在接收到新的props或state后，render方法进行渲染之前&lt;/p&gt;
+&lt;h4 id=&quot;componentDidUpdate&quot;&gt;&lt;a href=&quot;#componentDidUpdate&quot; class=&quot;headerlink&quot; title=&quot;componentDidUpdate&quot;&gt;&lt;/a&gt;componentDidUpdate&lt;/h4&gt;&lt;p&gt;与componentDidMount方法类似，这个方法使我们可以获取到已经渲染好的DOM。&lt;/p&gt;
+&lt;h3 id=&quot;组件销毁&quot;&gt;&lt;a href=&quot;#组件销毁&quot; class=&quot;headerlink&quot; title=&quot;组件销毁&quot;&gt;&lt;/a&gt;组件销毁&lt;/h3&gt;&lt;p&gt;当使用完一个组件时，需要将其从DOM中卸载并销毁，这时只有componentWillUnmount一个函数会被调用，通过这个方法我们可以完成一些必要的销毁和清理工作，如：清除componentDidMount中添加的任务等。&lt;/p&gt;
+</content>
+    
+    <summary type="html">
+    
+      &lt;h3 id=&quot;概述&quot;&gt;&lt;a href=&quot;#概述&quot; class=&quot;headerlink&quot; title=&quot;概述&quot;&gt;&lt;/a&gt;概述&lt;/h3&gt;&lt;p&gt;学习iOS时我们会去研究视图控制器的生命周期，理解控制器从创建到销毁。联想到React，其组件也有从创建到销毁的过程。在组件的生命周期中，随着组件props或state的改变，其DOM表现形式也会有所变化。在生命周期的不同阶段，React提供了不同的处理函数使我们能够实现对组件整个生命周期内的控制和处理。
+    
+    </summary>
+    
+    
+      <category term="React" scheme="http://yoursite.com/tags/React/"/>
+    
+  </entry>
+  
+  <entry>
     <title>iOS9和Xcode7中 Stack Views 介绍</title>
     <link href="http://yoursite.com/2016/04/23/iOS9%E5%92%8CXcode7%E4%B8%AD-Stack-Views-%E4%BB%8B%E7%BB%8D/"/>
     <id>http://yoursite.com/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/</id>
     <published>2016-04-23T03:56:14.000Z</published>
-    <updated>2016-04-23T04:23:36.000Z</updated>
+    <updated>2016-04-23T05:01:11.000Z</updated>
     
     <content type="html">&lt;ul&gt;
 &lt;li&gt;原文：&lt;a href=&quot;http://www.appcoda.com/stack-views-intro/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;An Introduction to Stack Views in iOS 9 and Xcode 7&lt;/a&gt;&lt;/li&gt;
