@@ -108,7 +108,7 @@
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/NSString/" style="font-size: 10px;">NSString</a> <a href="/tags/React/" style="font-size: 10px;">React</a> <a href="/tags/block/" style="font-size: 10px;">block</a> <a href="/tags/runtime/" style="font-size: 10px;">runtime</a> <a href="/tags/内存/" style="font-size: 20px;">内存</a> <a href="/tags/动画/" style="font-size: 10px;">动画</a> <a href="/tags/基础/" style="font-size: 20px;">基础</a> <a href="/tags/基础/" style="font-size: 10px;">基础+</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/技巧/" style="font-size: 10px;">技巧</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a>
+						<a href="/tags/ES6/" style="font-size: 10px;">ES6</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/NSString/" style="font-size: 10px;">NSString</a> <a href="/tags/Promise/" style="font-size: 10px;">Promise</a> <a href="/tags/React/" style="font-size: 10px;">React</a> <a href="/tags/block/" style="font-size: 10px;">block</a> <a href="/tags/runtime/" style="font-size: 10px;">runtime</a> <a href="/tags/内存/" style="font-size: 20px;">内存</a> <a href="/tags/动画/" style="font-size: 10px;">动画</a> <a href="/tags/基础/" style="font-size: 20px;">基础</a> <a href="/tags/基础/" style="font-size: 10px;">基础+</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/技巧/" style="font-size: 10px;">技巧</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a>
 					</div>
 				</section>
 				
@@ -173,6 +173,186 @@
 	</div>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-JavaScript-学习之正则篇" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/01/07/JavaScript-学习之正则篇/" class="article-date">
+  	<time datetime="2017-01-07T03:40:16.000Z" itemprop="datePublished">2017-01-07</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/07/JavaScript-学习之正则篇/">JavaScript 学习之正则篇</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>正则表达式可以极大的提高复杂文本分析的效率，快速匹配出复杂的字符串。</p>
+</blockquote>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li></ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a  href="/2017/01/07/JavaScript-学习之正则篇/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-ES6函数拓展-箭头函数" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/01/07/ES6函数拓展-箭头函数/" class="article-date">
+  	<time datetime="2017-01-07T03:35:16.000Z" itemprop="datePublished">2017-01-07</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/07/ES6函数拓展-箭头函数/">ES6函数拓展 - 箭头函数</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>ES6允许使用“箭头”（=&gt;）定义函数，且总是匿名函数。</p>
+<h4 id="1-基本语法"><a href="#1-基本语法" class="headerlink" title="1.基本语法"></a>1.基本语法</h4><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">(param1, param2, …, paramN) =&gt; &#123; statements &#125;</span><br><span class="line"></span><br><span class="line">(param1, param2, …, paramN) =&gt; expression</span><br><span class="line"><span class="comment">//等同于</span></span><br><span class="line">(param1, param2, …, paramN) =&gt; &#123; <span class="keyword">return</span> expression; &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果只有一个参数，圆括号是可选的:</span></span><br><span class="line">singleParam =&gt; &#123; statements &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 无参数的函数需要使用圆括号:</span></span><br><span class="line">() =&gt; &#123; statements &#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ES6/">ES6</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li></ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a  href="/2017/01/07/ES6函数拓展-箭头函数/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+  
+    <article id="post-Promise学习之bluebird-基础篇" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/01/07/Promise学习之bluebird-基础篇/" class="article-date">
+  	<time datetime="2017-01-07T03:31:26.000Z" itemprop="datePublished">2017-01-07</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/01/07/Promise学习之bluebird-基础篇/">Promise学习之bluebird(基础篇)</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>bluebird是一个第三方的Promise实现，除了Promise对象中的方法外，bluebird还有很多扩展方法。如，可以通过.spread()展开结构集、可以通过Promise.promisify()方法将一个Node回调函数包装成一个Promise实例。</p>
+</blockquote>
+<p>安装bluebird模块后，可以就可以通过require获取对模块的引用：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> <span class="built_in">Promise</span> = <span class="built_in">require</span>(<span class="string">'bluebird'</span>);</span><br></pre></td></tr></table></figure></p>
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Promise/">Promise</a></li></ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a  href="/2017/01/07/Promise学习之bluebird-基础篇/#more">more >></a>
+        </p>
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
   
     <article id="post-react学习之组件生命周期" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -589,131 +769,17 @@
 
 
   
-    <article id="post-iOS开发ARC内存管理" class="article article-type-post" itemscope itemprop="blogPost">
   
-    <div class="article-meta">
-      <a href="/2015/09/19/iOS开发ARC内存管理/" class="article-date">
-  	<time datetime="2015-09-19T13:43:52.000Z" itemprop="datePublished">2015-09-19</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/19/iOS开发ARC内存管理/">iOS开发ARC内存管理</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><code>ARC</code>  <code>内存管理</code>   </p>
-<p>在了解ARC之前，先了解OC内存管理里面的<code>对象生命周期</code>、<code>引用计数</code>、<code>对象所有权</code> ，（自行查阅相关资料）</p>
-<p>本文简单介绍iOS开发中ARC(Automatic Reference Counting，<code>自动引用计数</code>)内存管理的一些要点，所以不会讲的很全面。详细的关于ARC的信息请参见苹果的！<a href="https://developer.apple.com/library/ios/releasenotes/ObjectiveC/RN-TransitioningToARC/Introduction/Introduction.html">官方文档</a>与网上的其他教程）
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/内存/">内存</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/基础/">基础</a></li></ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/19/iOS开发ARC内存管理/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
-    <article id="post-从iOS的内存说起" class="article article-type-post" itemscope itemprop="blogPost">
-  
-    <div class="article-meta">
-      <a href="/2015/09/19/从iOS的内存说起/" class="article-date">
-  	<time datetime="2015-09-19T08:30:22.000Z" itemprop="datePublished">2015-09-19</time>
-</a>
-    </div>
-  
-  <div class="article-inner">
-    
-      <input type="hidden" class="isFancy" />
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/09/19/从iOS的内存说起/">从iOS的内存说起</a>
-    </h1>
-  
-
-      </header>
-      
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h3 id="当启动一个app"><a href="#当启动一个app" class="headerlink" title="当启动一个app"></a>当启动一个app</h3><p>当启动一个app程序，系统会把开启的那个app程序从ROM里面拷贝到内存（RAM）<em><code>RAM的访问速度要远高内存卡(Flash)或ROM</code></em>，然后从内存里面执行。
-      
-    </div>
-    
-    <div class="article-info article-info-index">
-      
-      
-	<div class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/内存/">内存</a></li></ul>
-	</div>
-
-      
-
-      
-        <p class="article-more-link">
-          <a  href="/2015/09/19/从iOS的内存说起/#more">more >></a>
-        </p>
-      
-      <div class="clearfix"></div>
-    </div>
-    
-  </div>
-  
-</article>
-
-
-
-
-
-
-
-  
+    <nav id="page-nav">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
+    </nav>
   
 </div>
       <footer id="footer">
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2016 OceanOver
+    		&copy; 2017 OceanOver
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
