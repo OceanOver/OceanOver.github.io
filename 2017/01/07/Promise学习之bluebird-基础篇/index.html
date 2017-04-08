@@ -37,7 +37,7 @@
 	<header id="header" class="inner">
 		<a href="/" class="profilepic">
 			
-			<img lazy-src="/yt.png" class="js-avatar">
+			<img lazy-src="/yt.jpg" class="js-avatar">
 			
 		</a>
 
@@ -115,7 +115,7 @@
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/ES6/" style="font-size: 10px;">ES6</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/NSString/" style="font-size: 10px;">NSString</a> <a href="/tags/Promise/" style="font-size: 10px;">Promise</a> <a href="/tags/React/" style="font-size: 10px;">React</a> <a href="/tags/block/" style="font-size: 10px;">block</a> <a href="/tags/runtime/" style="font-size: 10px;">runtime</a> <a href="/tags/内存/" style="font-size: 20px;">内存</a> <a href="/tags/动画/" style="font-size: 10px;">动画</a> <a href="/tags/基础/" style="font-size: 20px;">基础</a> <a href="/tags/基础/" style="font-size: 10px;">基础+</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/技巧/" style="font-size: 10px;">技巧</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a>
+						<a href="/tags/ES6/" style="font-size: 10px;">ES6</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/NSString/" style="font-size: 10px;">NSString</a> <a href="/tags/Promise/" style="font-size: 13.33px;">Promise</a> <a href="/tags/React/" style="font-size: 10px;">React</a> <a href="/tags/block/" style="font-size: 10px;">block</a> <a href="/tags/runtime/" style="font-size: 10px;">runtime</a> <a href="/tags/内存/" style="font-size: 16.67px;">内存</a> <a href="/tags/动画/" style="font-size: 10px;">动画</a> <a href="/tags/基础/" style="font-size: 16.67px;">基础</a> <a href="/tags/基础/" style="font-size: 10px;">基础+</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/技巧/" style="font-size: 10px;">技巧</a> <a href="/tags/翻译/" style="font-size: 13.33px;">翻译</a>
 					</div>
 				</section>
 				
@@ -151,7 +151,7 @@
 	<div class="intrude-less">
 		<header id="header" class="inner">
 			<div class="profilepic">
-				<img lazy-src="/yt.png" class="js-avatar">
+				<img lazy-src="/yt.jpg" class="js-avatar">
 			</div>
 			<hgroup>
 			  <h1 class="header-author">OceanOver</h1>
@@ -231,15 +231,15 @@
 </ul>
 <h4 id="1-3-实例的catch-方法"><a href="#1-3-实例的catch-方法" class="headerlink" title="1.3 实例的catch()方法"></a>1.3 实例的catch()方法</h4><figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">promise.<span class="keyword">catch</span><span class="function"><span class="params">(<span class="keyword">function</span>(any error) handler)</span> -&gt;</span> Promise</span><br></pre></td></tr></table></figure>
 <p>catch()方法是promise中.then(null, handler)的便捷方法，.then链中异常会被传递到.catch中。<br>为了提高代码的可读性，我们可以使用promise.then处理操作成功的情况，使用promise.catch处理操作失败的情况，示例如下：<br><figure class="highlight scilab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">promise.<span class="keyword">then</span>(<span class="function"><span class="keyword">function</span><span class="params">(result)</span> &#123;</span></span><br><span class="line">    <span class="comment">// 操作成功</span></span><br><span class="line">&#125;).<span class="keyword">catch</span>(<span class="function"><span class="keyword">function</span><span class="params">(err)</span> &#123;</span></span><br><span class="line">    <span class="comment">// 操作失败</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
-<h4 id="1-4-spread-展开实例返回的结果数组"><a href="#1-4-spread-展开实例返回的结果数组" class="headerlink" title="1.4 .spread - 展开实例返回的结果数组"></a>1.4 .spread - 展开实例返回的结果数组</h4><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">readFilesAsync</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> [fs.readFileAsync(<span class="string">"file1.txt"</span>),</span><br><span class="line">        fs.readFileAsync(<span class="string">"file2.txt"</span>)</span><br><span class="line">    ];</span><br><span class="line">&#125;</span><br><span class="line">readFilesAsync().spread(<span class="function"><span class="keyword">function</span><span class="params">(file1text, file2text)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//deal with fileText</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-<h4 id="1-5-Promise-resolve-方法"><a href="#1-5-Promise-resolve-方法" class="headerlink" title="1.5 Promise.resolve()方法"></a>1.5 Promise.resolve()方法</h4><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">Promise</span><span class="selector-class">.resolve</span>(<span class="selector-tag">obj</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="1-4-spread-展开实例返回的结果数组"><a href="#1-4-spread-展开实例返回的结果数组" class="headerlink" title="1.4 .spread - 展开实例返回的结果数组"></a>1.4 .spread - 展开实例返回的结果数组</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">readFilesAsync</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> [fs.readFileAsync(<span class="string">"file1.txt"</span>),</span><br><span class="line">        fs.readFileAsync(<span class="string">"file2.txt"</span>)</span><br><span class="line">    ];</span><br><span class="line">&#125;</span><br><span class="line">readFilesAsync().spread(<span class="function"><span class="keyword">function</span>(<span class="params">file1text, file2text</span>) </span>&#123;</span><br><span class="line">    <span class="comment">//deal with fileText</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h4 id="1-5-Promise-resolve-方法"><a href="#1-5-Promise-resolve-方法" class="headerlink" title="1.5 Promise.resolve()方法"></a>1.5 Promise.resolve()方法</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Promise</span>.resolve(obj)</span><br></pre></td></tr></table></figure>
 <ul>
 <li>参数是Promise实例，那么Promise.resolve将不做任何修改、原封不动地返回这个实例</li>
 <li>参数是一个thenable对象,thenable对象指的是具有then方法的对象(个人在实践中没有用到)</li>
 <li>参数是一个原始值，则Promise.resolve方法返回一个新的Promise对象，状态为Resolved。</li>
 <li>不带参数，直接返回一个Resolved状态的Promise对象。</li>
 </ul>
-<h4 id="1-6-Promise-reject-方法"><a href="#1-6-Promise-reject-方法" class="headerlink" title="1.6 Promise.reject()方法"></a>1.6 Promise.reject()方法</h4><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">Promise</span><span class="selector-class">.reject</span>(<span class="selector-tag">obj</span>)</span><br></pre></td></tr></table></figure>
+<h4 id="1-6-Promise-reject-方法"><a href="#1-6-Promise-reject-方法" class="headerlink" title="1.6 Promise.reject()方法"></a>1.6 Promise.reject()方法</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Promise</span>.reject(obj)</span><br></pre></td></tr></table></figure>
 <p>该方法也会返回一个新的Promise实例，该实例的状态为rejected。它的参数用法与Promise.resolve方法完全一致。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> p = <span class="built_in">Promise</span>.resolve(<span class="string">'出错了'</span>);</span><br><span class="line"></span><br><span class="line">p.catch(<span class="function"><span class="keyword">function</span> (<span class="params">s</span>)</span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(s);   <span class="comment">//出错了</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
 <h3 id="2-Promise包装器"><a href="#2-Promise包装器" class="headerlink" title="2. Promise包装器"></a>2. Promise包装器</h3><blockquote>
 <p>将一个没有Promise的API对象包装成有Promise的API对象，即将其Promise化<br>bluebird中有用于单个函数包装的Promise.promisify方法，也有用于对象属性包装的Promise.promisifyAll方法</p>
@@ -295,26 +295,6 @@
 	<!-- JiaThis Button END -->
 </div>
 
-
-
-<div class="duoshuo">
-	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="Promise学习之bluebird-基础篇" data-title="Promise学习之bluebird(基础篇)" data-url="http://yoursite.com/2017/01/07/Promise学习之bluebird-基础篇/"></div>
-	<!-- 多说评论框 end -->
-	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-	<script type="text/javascript">
-	var duoshuoQuery = {short_name:"true"};
-	(function() {
-		var ds = document.createElement('script');
-		ds.type = 'text/javascript';ds.async = true;
-		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-		ds.charset = 'UTF-8';
-		(document.getElementsByTagName('head')[0] 
-		 || document.getElementsByTagName('body')[0]).appendChild(ds);
-	})();
-	</script>
-	<!-- 多说公共JS代码 end -->
-</div>
 
 
 

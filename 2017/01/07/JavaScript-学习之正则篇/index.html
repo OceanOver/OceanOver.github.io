@@ -31,7 +31,7 @@
 	<header id="header" class="inner">
 		<a href="/" class="profilepic">
 			
-			<img lazy-src="/yt.png" class="js-avatar">
+			<img lazy-src="/yt.jpg" class="js-avatar">
 			
 		</a>
 
@@ -109,7 +109,7 @@
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/ES6/" style="font-size: 10px;">ES6</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/NSString/" style="font-size: 10px;">NSString</a> <a href="/tags/Promise/" style="font-size: 10px;">Promise</a> <a href="/tags/React/" style="font-size: 10px;">React</a> <a href="/tags/block/" style="font-size: 10px;">block</a> <a href="/tags/runtime/" style="font-size: 10px;">runtime</a> <a href="/tags/内存/" style="font-size: 20px;">内存</a> <a href="/tags/动画/" style="font-size: 10px;">动画</a> <a href="/tags/基础/" style="font-size: 20px;">基础</a> <a href="/tags/基础/" style="font-size: 10px;">基础+</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/技巧/" style="font-size: 10px;">技巧</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a>
+						<a href="/tags/ES6/" style="font-size: 10px;">ES6</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/NSString/" style="font-size: 10px;">NSString</a> <a href="/tags/Promise/" style="font-size: 13.33px;">Promise</a> <a href="/tags/React/" style="font-size: 10px;">React</a> <a href="/tags/block/" style="font-size: 10px;">block</a> <a href="/tags/runtime/" style="font-size: 10px;">runtime</a> <a href="/tags/内存/" style="font-size: 16.67px;">内存</a> <a href="/tags/动画/" style="font-size: 10px;">动画</a> <a href="/tags/基础/" style="font-size: 16.67px;">基础</a> <a href="/tags/基础/" style="font-size: 10px;">基础+</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/技巧/" style="font-size: 10px;">技巧</a> <a href="/tags/翻译/" style="font-size: 13.33px;">翻译</a>
 					</div>
 				</section>
 				
@@ -145,7 +145,7 @@
 	<div class="intrude-less">
 		<header id="header" class="inner">
 			<div class="profilepic">
-				<img lazy-src="/yt.png" class="js-avatar">
+				<img lazy-src="/yt.jpg" class="js-avatar">
 			</div>
 			<hgroup>
 			  <h1 class="header-author">OceanOver</h1>
@@ -368,7 +368,7 @@
 </li>
 </ul>
 <h4 id="RegExp的方法"><a href="#RegExp的方法" class="headerlink" title="RegExp的方法"></a>RegExp的方法</h4><ul>
-<li>exec()<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">该方法对一个指定的字符串执行一个正则表达式，执行正则表达式的匹配，返回一个数组。没有匹配到则返回 <span class="keyword">null</span>，返回的数组是Array的实例，而且返回值还包含另外<span class="number">2</span>个属性：<span class="keyword">index</span>： 匹配到的字符位于原始字符串的基于<span class="number">0</span>的索引值 和 input： 原始字符串`。</span><br></pre></td></tr></table></figure>
+<li>exec()<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">该方法对一个指定的字符串执行一个正则表达式，执行正则表达式的匹配，返回一个数组。没有匹配到则返回 <span class="literal">null</span>，返回的数组是<span class="built_in">Array</span>的实例，而且返回值还包含另外<span class="number">2</span>个属性：index： 匹配到的字符位于原始字符串的基于<span class="number">0</span>的索引值 和 input： 原始字符串<span class="string">`。</span></span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myRe = <span class="regexp">/ab*/g</span>;</span><br><span class="line"><span class="keyword">var</span> str = <span class="string">'abbcdefabh'</span>;</span><br><span class="line"><span class="keyword">var</span> oo = myRe.exec(str);</span><br><span class="line"><span class="built_in">console</span>.log(oo);</span><br><span class="line"><span class="comment">//[ 'abb', index: 0, input: 'abbcdefabh' ]</span></span><br><span class="line">oo = myRe.exec(str);</span><br><span class="line"><span class="built_in">console</span>.log(oo);</span><br><span class="line"><span class="comment">//[ 'ab', index: 7, input: 'abbcdefabh' ]</span></span><br></pre></td></tr></table></figure>
@@ -381,7 +381,7 @@
 </ul>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> pattern = <span class="regexp">/java/i</span>;</span><br><span class="line"><span class="keyword">var</span> result = pattern.test(<span class="string">'javascript'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(result); <span class="comment">//true</span></span><br></pre></td></tr></table></figure>
 <ul>
-<li>toString()<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">RegExp</span> 对象覆盖了 <span class="built_in">Object</span> 对象的 toString() 方法，并没有继承 <span class="built_in">Object</span>.prototype.toString()。对于 <span class="built_in">RegExp</span> 对象，toString 方法返回一个该正则表达式的字面量。</span><br></pre></td></tr></table></figure>
+<li>toString()<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">RegExp</span> 对象覆盖了 <span class="built_in">Object</span> 对象的 toString() 方法，并没有继承 <span class="built_in">Object</span>.prototype.toString()。对于 <span class="built_in">RegExp</span> 对象，toString 方法返回一个该正则表达式的字面量。</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">myExp = <span class="keyword">new</span> <span class="built_in">RegExp</span>(<span class="string">"a+b+c"</span>);</span><br><span class="line"><span class="built_in">console</span>.log(myExp.toString());  <span class="comment">// 结果: /a+b+c/</span></span><br><span class="line"></span><br><span class="line">foo = <span class="keyword">new</span> <span class="built_in">RegExp</span>(<span class="string">"bar"</span>, <span class="string">"g"</span>);</span><br><span class="line"><span class="built_in">console</span>.log(foo.toString());   <span class="comment">// 结果: /bar/g</span></span><br></pre></td></tr></table></figure>
@@ -391,12 +391,12 @@
 </ul>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//查找连续2个数字的位置</span></span><br><span class="line"><span class="string">'a1b2c33d4'</span>.search(<span class="regexp">/(\d)&#123;2&#125;/</span>)</span><br><span class="line"><span class="comment">// 5</span></span><br></pre></td></tr></table></figure>
 <ul>
-<li>String.replace()<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">一个在字符串中执行查找匹配的<span class="keyword">String</span>方法，并且使用替换字符串替换掉匹配到的子字符串。</span><br></pre></td></tr></table></figure>
+<li>String.replace()<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">一个在字符串中执行查找匹配的<span class="built_in">String</span>方法，并且使用替换字符串替换掉匹配到的子字符串。</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'121212'</span>.replace(<span class="regexp">/1/g</span>,<span class="string">','</span>)</span><br><span class="line"><span class="comment">//",2,2,2"</span></span><br></pre></td></tr></table></figure>
 <ul>
-<li>String.match()<figure class="highlight autoit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">参数：一个正则表达式。一个在字符串中执行查找匹配的<span class="built_in">String</span>方法，它返回一个数组或者在未匹配到时返回<span class="literal">null</span>。</span><br><span class="line">设置g则返回所有匹配结果，否则数组的第一个元素是匹配的字符串，剩下的是圆括号中的子表达式</span><br></pre></td></tr></table></figure>
+<li>String.match()<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">参数：一个正则表达式。一个在字符串中执行查找匹配的<span class="built_in">String</span>方法，它返回一个数组或者在未匹配到时返回<span class="literal">null</span>。</span><br><span class="line">设置g则返回所有匹配结果，否则数组的第一个元素是匹配的字符串，剩下的是圆括号中的子表达式</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> matchResult = <span class="string">'121212'</span>.match(<span class="regexp">/1/g</span>)</span><br><span class="line"><span class="built_in">console</span>.log(matchResult);</span><br><span class="line"><span class="comment">//["1", "1", "1"]</span></span><br><span class="line">matchResult = <span class="string">'121212'</span>.match(<span class="regexp">/1/</span>)</span><br><span class="line"><span class="built_in">console</span>.log(matchResult);</span><br><span class="line"><span class="comment">//[ '1', index: 0, input: '121212' ]</span></span><br></pre></td></tr></table></figure>
@@ -414,6 +414,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2017/04/08/Async-Await-优雅的异步代码/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption"><</strong>
+      <div class="article-nav-title">
+        
+          Async/Await 优雅的异步代码
+        
+      </div>
+    </a>
   
   
     <a href="/2017/01/07/ES6函数拓展-箭头函数/" id="article-nav-older" class="article-nav-link-wrap">
@@ -442,26 +451,6 @@
 	<!-- JiaThis Button END -->
 </div>
 
-
-
-<div class="duoshuo">
-	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="JavaScript-学习之正则篇" data-title="JavaScript 学习之正则篇" data-url="http://yoursite.com/2017/01/07/JavaScript-学习之正则篇/"></div>
-	<!-- 多说评论框 end -->
-	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-	<script type="text/javascript">
-	var duoshuoQuery = {short_name:"true"};
-	(function() {
-		var ds = document.createElement('script');
-		ds.type = 'text/javascript';ds.async = true;
-		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-		ds.charset = 'UTF-8';
-		(document.getElementsByTagName('head')[0] 
-		 || document.getElementsByTagName('body')[0]).appendChild(ds);
-	})();
-	</script>
-	<!-- 多说公共JS代码 end -->
-</div>
 
 
 

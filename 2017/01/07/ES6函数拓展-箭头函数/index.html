@@ -34,7 +34,7 @@
 	<header id="header" class="inner">
 		<a href="/" class="profilepic">
 			
-			<img lazy-src="/yt.png" class="js-avatar">
+			<img lazy-src="/yt.jpg" class="js-avatar">
 			
 		</a>
 
@@ -112,7 +112,7 @@
 				
 				<section class="switch-part switch-part2">
 					<div class="widget tagcloud" id="js-tagcloud">
-						<a href="/tags/ES6/" style="font-size: 10px;">ES6</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/NSString/" style="font-size: 10px;">NSString</a> <a href="/tags/Promise/" style="font-size: 10px;">Promise</a> <a href="/tags/React/" style="font-size: 10px;">React</a> <a href="/tags/block/" style="font-size: 10px;">block</a> <a href="/tags/runtime/" style="font-size: 10px;">runtime</a> <a href="/tags/内存/" style="font-size: 20px;">内存</a> <a href="/tags/动画/" style="font-size: 10px;">动画</a> <a href="/tags/基础/" style="font-size: 20px;">基础</a> <a href="/tags/基础/" style="font-size: 10px;">基础+</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/技巧/" style="font-size: 10px;">技巧</a> <a href="/tags/翻译/" style="font-size: 15px;">翻译</a>
+						<a href="/tags/ES6/" style="font-size: 10px;">ES6</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/NSString/" style="font-size: 10px;">NSString</a> <a href="/tags/Promise/" style="font-size: 13.33px;">Promise</a> <a href="/tags/React/" style="font-size: 10px;">React</a> <a href="/tags/block/" style="font-size: 10px;">block</a> <a href="/tags/runtime/" style="font-size: 10px;">runtime</a> <a href="/tags/内存/" style="font-size: 16.67px;">内存</a> <a href="/tags/动画/" style="font-size: 10px;">动画</a> <a href="/tags/基础/" style="font-size: 16.67px;">基础</a> <a href="/tags/基础/" style="font-size: 10px;">基础+</a> <a href="/tags/布局/" style="font-size: 10px;">布局</a> <a href="/tags/技巧/" style="font-size: 10px;">技巧</a> <a href="/tags/翻译/" style="font-size: 13.33px;">翻译</a>
 					</div>
 				</section>
 				
@@ -148,7 +148,7 @@
 	<div class="intrude-less">
 		<header id="header" class="inner">
 			<div class="profilepic">
-				<img lazy-src="/yt.png" class="js-avatar">
+				<img lazy-src="/yt.jpg" class="js-avatar">
 			</div>
 			<hgroup>
 			  <h1 class="header-author">OceanOver</h1>
@@ -217,7 +217,7 @@
 <h4 id="1-基本语法"><a href="#1-基本语法" class="headerlink" title="1.基本语法"></a>1.基本语法</h4><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">(param1, param2, …, paramN) =&gt; &#123; statements &#125;</span><br><span class="line"></span><br><span class="line">(param1, param2, …, paramN) =&gt; expression</span><br><span class="line"><span class="comment">//等同于</span></span><br><span class="line">(param1, param2, …, paramN) =&gt; &#123; <span class="keyword">return</span> expression; &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果只有一个参数，圆括号是可选的:</span></span><br><span class="line">singleParam =&gt; &#123; statements &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 无参数的函数需要使用圆括号:</span></span><br><span class="line">() =&gt; &#123; statements &#125;</span><br></pre></td></tr></table></figure>
 <a id="more"></a>
 <p>例如以下箭头函数:<br><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> f = v =&gt; v;</span><br></pre></td></tr></table></figure></p>
-<p>等价于:<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> f = <span class="function"><span class="keyword">function</span><span class="params">(v)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> v;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>等价于:<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> f = <span class="function"><span class="keyword">function</span>(<span class="params">v</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> v;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
 <p>如果箭头函数的代码块部分多于一条语句，就要使用大括号将它们括起来，并且使用return语句返回。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> sum = (string1, string2) =&gt; &#123;</span><br><span class="line">    <span class="keyword">let</span> num1 = <span class="built_in">Number</span>.parseInt(string1);</span><br><span class="line">    <span class="keyword">let</span> num2 = <span class="built_in">Number</span>.parseInt(string2);</span><br><span class="line">    <span class="keyword">return</span> num1 + num2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>大括号被解释为代码块，所以如果箭头函数直接返回一个对象，必须在对象外面加上括号。<br><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var getItem = <span class="keyword">id</span> =&gt; (&#123; <span class="keyword">id</span>: <span class="keyword">id</span>, name: <span class="string">"Item"</span> &#125;);</span><br></pre></td></tr></table></figure></p>
 <p>箭头函数极大的简化了回调函数<br><figure class="highlight cos"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 正常函数写法</span></span><br><span class="line">[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>].map(function (<span class="keyword">x</span>) &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">x</span> * <span class="keyword">x</span><span class="comment">;</span></span><br><span class="line">&#125;)<span class="comment">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 箭头函数写法</span></span><br><span class="line">[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>].map(<span class="keyword">x</span> =&gt; <span class="keyword">x</span> * <span class="keyword">x</span>)<span class="comment">;</span></span><br></pre></td></tr></table></figure></p>
@@ -271,26 +271,6 @@
 	<!-- JiaThis Button END -->
 </div>
 
-
-
-<div class="duoshuo">
-	<!-- 多说评论框 start -->
-	<div class="ds-thread" data-thread-key="ES6函数拓展-箭头函数" data-title="ES6函数拓展 - 箭头函数" data-url="http://yoursite.com/2017/01/07/ES6函数拓展-箭头函数/"></div>
-	<!-- 多说评论框 end -->
-	<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-	<script type="text/javascript">
-	var duoshuoQuery = {short_name:"true"};
-	(function() {
-		var ds = document.createElement('script');
-		ds.type = 'text/javascript';ds.async = true;
-		ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-		ds.charset = 'UTF-8';
-		(document.getElementsByTagName('head')[0] 
-		 || document.getElementsByTagName('body')[0]).appendChild(ds);
-	})();
-	</script>
-	<!-- 多说公共JS代码 end -->
-</div>
 
 
 
