@@ -5,7 +5,7 @@ node_js: stable
 # branches
 branches:
   only:
-    - master
+    - source
 
 cache:
   directories:
