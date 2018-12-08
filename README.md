@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/OceanOver/OceanOver.github.io.svg?branch=source)](https://travis-ci.org/OceanOver/OceanOver.github.io)
 ## info
 
 GitHub Page [click me](https://oceanover.github.io/)
