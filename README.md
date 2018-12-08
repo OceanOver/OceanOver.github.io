@@ -5,4 +5,4 @@
 
 博客框架 [hexo](https://hexo.io/zh-cn/)
 
-Hexo主题 [NexT](https://github.com/iissnan/hexo-theme-next)
+Hexo主题 [NexT](https://github.com/theme-next/hexo-theme-next)
