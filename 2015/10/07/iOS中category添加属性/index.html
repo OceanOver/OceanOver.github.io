@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="我们知道，使用Category可以很方便地为现有的类增加方法，但却无法直接增加实例变量。不过从Mac OS X v10.6开始，系统提供了Associative References，这个问题就很容易解决了。这种方法也就是所谓的关联(association)，我们可以在runtime期间动态地添加任意多的属性，并且随时读取。">
+<meta name="keywords" content="runtime,基础+">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS中category添加属性">
+<meta property="og:url" content="http://yoursite.com/2015/10/07/iOS中category添加属性/index.html">
+<meta property="og:site_name" content="OceanOver&#39;s Blog">
+<meta property="og:description" content="我们知道，使用Category可以很方便地为现有的类增加方法，但却无法直接增加实例变量。不过从Mac OS X v10.6开始，系统提供了Associative References，这个问题就很容易解决了。这种方法也就是所谓的关联(association)，我们可以在runtime期间动态地添加任意多的属性，并且随时读取。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-12-08T14:54:32.998Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS中category添加属性">
+<meta name="twitter:description" content="我们知道，使用Category可以很方便地为现有的类增加方法，但却无法直接增加实例变量。不过从Mac OS X v10.6开始，系统提供了Associative References，这个问题就很容易解决了。这种方法也就是所谓的关联(association)，我们可以在runtime期间动态地添加任意多的属性，并且随时读取。">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/10/07/iOS中category添加属性/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>iOS中category添加属性 | OceanOver's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">OceanOver's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">个人博客</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/10/07/iOS中category添加属性/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="OceanOver">
+      <meta itemprop="description" content="个人博客，记录学习历程">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="OceanOver's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS中category添加属性
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2015-10-07 16:15:39" itemprop="dateCreated datePublished" datetime="2015-10-07T16:15:39+00:00">2015-10-07</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-12-08 14:54:32" itemprop="dateModified" datetime="2018-12-08T14:54:32+00:00">2018-12-08</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>我们知道，使用Category可以很方便地为现有的类增加方法，但却无法直接增加实例变量。不过从Mac OS X v10.6开始，系统提供了Associative References，这个问题就很容易解决了。这种方法也就是所谓的关联(association)，我们可以在runtime期间动态地添加任意多的属性，并且随时读取。<a id="more"></a>所用到的两个重要runtime API是：</p>
+<figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">OBJC_EXPORT <span class="keyword">void</span> objc_setAssociatedObject(<span class="keyword">id</span> object, <span class="keyword">const</span> <span class="keyword">void</span> *key, <span class="keyword">id</span> value, objc_AssociationPolicy policy)</span><br><span class="line">OBJC_EXPORT <span class="keyword">id</span> objc_getAssociatedObject(<span class="keyword">id</span> object, <span class="keyword">const</span> <span class="keyword">void</span> *key)</span><br><span class="line">__OSX_AVAILABLE_STARTING(__MAC_10_6, __IPHONE_3_1);</span><br></pre></td></tr></table></figure>
+<p><code>例：</code>我们现在打算利用category对UILabel进行属性补充。一般我们有个原则：<code>能用category扩展就不用继承，因为随着继承深度的增加，代码的可维护性也会增加很多。</code>使用category可以这么做：</p>
+<figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import <span class="meta-string">&lt;UIKit/UIKit.h&gt;</span></span></span><br><span class="line"><span class="meta">#import <span class="meta-string">&lt;objc/runtime.h&gt;</span></span></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">UILabel</span> (<span class="title">Associate</span>)</span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>,<span class="keyword">copy</span>) <span class="built_in">NSString</span> *labelId;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">UILabel</span> (<span class="title">Associate</span>)</span></span><br><span class="line"><span class="keyword">@dynamic</span> labelId;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">char</span> labelIdKey;</span><br><span class="line">- (<span class="keyword">void</span>)setLabelId:(<span class="built_in">NSString</span> *)labelId &#123;</span><br><span class="line">    objc_setAssociatedObject(<span class="keyword">self</span>, &amp;labelIdKey, labelId, OBJC_ASSOCIATION_COPY_NONATOMIC);</span><br><span class="line">&#125;</span><br><span class="line">- (<span class="built_in">NSString</span> *)labelId &#123;</span><br><span class="line">    <span class="keyword">return</span> objc_getAssociatedObject(<span class="keyword">self</span>, &amp;labelIdKey);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<ol>
+<li>key：我们注意到在函数签名中key的类型const void *，这表示key仅仅是一个地址。关键字是一个void类型的指针。每一个关联的关键字必须是唯一的。通常都是会采用静态变量来作为关键字。</li>
+<li>policy：这里的policy跟属性声明中的retain、assign、copy是一样的，不再赘述。关联策略表明了相关的对象是通过赋值，保留引用还是复制的方式进行关联的；还有这种关联是原子的还是非原子的。这里的关联策略和声明属性时的很类似。这种关联策略是通过使用预先定义好的常量来表示的。</li>
+<li>在implement开始处的@dynamic声明。@dynamic则告诉编译器，编译阶段不用为我生成setter与getter，在runtime我已经自己实现了setter与getter。</li>
+</ol>
+<hr>
+<h3 id="延伸阅读"><a href="#延伸阅读" class="headerlink" title="延伸阅读"></a>延伸阅读</h3><h3 id="关联对象相关的BlocksKit"><a href="#关联对象相关的BlocksKit" class="headerlink" title="关联对象相关的BlocksKit"></a>关联对象相关的BlocksKit</h3><p>BlocksKit是对Cocoa Touch Block编程更进一步的支持，它简化了Block编程，发挥Block的相关优势，让更多UIKit类支持Block式编程。</p>
+<p>详细了解blockskit参见<a href="http://blog.csdn.net/cshun1990/article/details/45462031" target="_blank" rel="noopener">BlocksKit源码分析</a></p>
+<p>关联对象相关的BlocksKit是对objc_setAssociatedObject、objc_getAssociatedObject、objc_removeAssociatedObjects这几个原生关联对象函数的封装。主要是封装其其内存管理语义。</p>
+<p>部分函数声明如下：</p>
+<figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//@interface NSObject (BKAssociatedObjects)</span></span><br><span class="line"><span class="comment">//以OBJC_ASSOCIATION_RETAIN_NONATOMIC方式绑定关联对象</span></span><br><span class="line">- (<span class="keyword">void</span>)bk_associateValue:(<span class="keyword">id</span>)value withKey:(<span class="keyword">const</span> <span class="keyword">void</span> *)key;</span><br><span class="line"><span class="comment">//以OBJC_ASSOCIATION_COPY_NONATOMIC方式绑定关联对象</span></span><br><span class="line">- (<span class="keyword">void</span>)bk_associateCopyOfValue:(<span class="keyword">id</span>)value withKey:(<span class="keyword">const</span> <span class="keyword">void</span> *)key;</span><br><span class="line"><span class="comment">//以OBJC_ASSOCIATION_RETAIN方式绑定关联对象</span></span><br><span class="line">- (<span class="keyword">void</span>)bk_atomicallyAssociateValue:(<span class="keyword">id</span>)value withKey:(<span class="keyword">const</span> <span class="keyword">void</span> *)key;</span><br><span class="line"><span class="comment">//以OBJC_ASSOCIATION_COPY方式绑定关联对象</span></span><br><span class="line">- (<span class="keyword">void</span>)bk_atomicallyAssociateCopyOfValue:(<span class="keyword">id</span>)value withKey:(<span class="keyword">const</span> <span class="keyword">void</span> *)key;</span><br><span class="line"><span class="comment">//弱绑定</span></span><br><span class="line">- (<span class="keyword">void</span>)bk_weaklyAssociateValue:(__autoreleasing <span class="keyword">id</span>)value withKey:(<span class="keyword">const</span> <span class="keyword">void</span> *)key;</span><br><span class="line"><span class="comment">//删除所有绑定的关联对象</span></span><br><span class="line">- (<span class="keyword">void</span>)bk_removeAllAssociatedObjects;</span><br></pre></td></tr></table></figure>
+<p>除了弱绑定以外，其它BlocksKit函数都是简单封装。弱绑定有点扩展关联对象原生语义的感觉。</p>
+<figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">_BKWeakAssociatedObject</span> : <span class="title">NSObject</span></span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">weak</span>) <span class="keyword">id</span> value;</span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight obj-c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)bk_weaklyAssociateValue:(__autoreleasing <span class="keyword">id</span>)value withKey:(<span class="keyword">const</span> <span class="keyword">void</span> *)key</span><br><span class="line">&#123;</span><br><span class="line">    _BKWeakAssociatedObject *assoc = objc_getAssociatedObject(<span class="keyword">self</span>, key);</span><br><span class="line">    <span class="keyword">if</span> (!assoc) &#123;</span><br><span class="line">        assoc = [_BKWeakAssociatedObject new];</span><br><span class="line">        <span class="comment">//做一个_BKWeakAssociatedObject对象中间层</span></span><br><span class="line">        <span class="comment">//以非原子持有的方式绑定一个_BKWeakAssociatedObject对象</span></span><br><span class="line">        <span class="comment">//_BKWeakAssociatedObject该对象又有真实对象的弱引用</span></span><br><span class="line">        [<span class="keyword">self</span> bk_associateValue:assoc withKey:key];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//_BKWeakAssociatedObject的weak property设置为真正应该关联的对象</span></span><br><span class="line">    assoc.value = value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从以上实现代码可以看出，所谓弱绑定实际上是在关联对象之间做了一个中间层，让本对象以OBJC_ASSOCIATION_RETAIN_NONATOMIC的形式去关联中间层（_BKWeakAssociatedObject），而中间层又以weak property的形式去存储真正关联对象的指针。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/runtime/" rel="tag"># runtime</a>
+          
+            <a href="/tags/基础/" rel="tag"># 基础+</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/09/29/block的一些基础/" rel="next" title="block的一些基础">
+                <i class="fa fa-chevron-left"></i> block的一些基础
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/10/如何使用Xcode的Targets来管理开发和生产构建/" rel="prev" title="如何使用Xcode的Targets来管理开发和生产构建">
+                如何使用Xcode的Targets来管理开发和生产构建 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">OceanOver</p>
+              <p class="site-description motion-element" itemprop="description">个人博客，记录学习历程</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#延伸阅读"><span class="nav-number">1.</span> <span class="nav-text">延伸阅读</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#关联对象相关的BlocksKit"><span class="nav-number">2.</span> <span class="nav-text">关联对象相关的BlocksKit</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">OceanOver</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v6.6.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

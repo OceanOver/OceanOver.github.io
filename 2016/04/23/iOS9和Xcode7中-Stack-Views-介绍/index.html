@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="原文：An Introduction to Stack Views in iOS 9 and Xcode 7   此前，我们已经谈到了swift2的新功能，从这个教程开始，我们将含盖iOS9中的一些很酷的新功能。iOS新版本中添加了许多新特新。对于开发者来说，Stack View的介绍值得首提。我知道有些开发者发现使用自动布局来设计复杂的用户界面很困难。Stack views正是为了帮助我们，使">
+<meta name="keywords" content="翻译,布局">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS9和Xcode7中 Stack Views 介绍">
+<meta property="og:url" content="http://yoursite.com/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/index.html">
+<meta property="og:site_name" content="OceanOver&#39;s Blog">
+<meta property="og:description" content="原文：An Introduction to Stack Views in iOS 9 and Xcode 7   此前，我们已经谈到了swift2的新功能，从这个教程开始，我们将含盖iOS9中的一些很酷的新功能。iOS新版本中添加了许多新特新。对于开发者来说，Stack View的介绍值得首提。我知道有些开发者发现使用自动布局来设计复杂的用户界面很困难。Stack views正是为了帮助我们，使">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/stackview-1.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/stackview-2.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/stackview-3.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/stackview-4.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/stackview-5.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/stackview-6.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/stackview-7.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/stackview-8.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/stackview-9.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/stackview-10.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/stackview-11.gif">
+<meta property="og:image" content="http://yoursite.com/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/stackview-12.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/stackview-13.gif">
+<meta property="og:image" content="http://yoursite.com/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/stackview-14.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/stackview-15.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/stackview-16.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/stackview-17.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/stackview-18.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/stackview-19.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/stackview-20.gif">
+<meta property="og:updated_time" content="2018-12-08T14:54:32.986Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS9和Xcode7中 Stack Views 介绍">
+<meta name="twitter:description" content="原文：An Introduction to Stack Views in iOS 9 and Xcode 7   此前，我们已经谈到了swift2的新功能，从这个教程开始，我们将含盖iOS9中的一些很酷的新功能。iOS新版本中添加了许多新特新。对于开发者来说，Stack View的介绍值得首提。我知道有些开发者发现使用自动布局来设计复杂的用户界面很困难。Stack views正是为了帮助我们，使">
+<meta name="twitter:image" content="http://yoursite.com/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/stackview-1.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>iOS9和Xcode7中 Stack Views 介绍 | OceanOver's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">OceanOver's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">个人博客</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="OceanOver">
+      <meta itemprop="description" content="个人博客，记录学习历程">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="OceanOver's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS9和Xcode7中 Stack Views 介绍
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-04-23 11:56:14" itemprop="dateCreated datePublished" datetime="2016-04-23T11:56:14+00:00">2016-04-23</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-12-08 14:54:32" itemprop="dateModified" datetime="2018-12-08T14:54:32+00:00">2018-12-08</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <ul>
+<li>原文：<a href="http://www.appcoda.com/stack-views-intro/" target="_blank" rel="noopener">An Introduction to Stack Views in iOS 9 and Xcode 7</a></li>
+</ul>
+<hr>
+<p>此前，我们已经谈到了swift2的新功能，从这个教程开始，我们将含盖iOS9中的一些很酷的新功能。iOS新版本中添加了许多新特新。对于开发者来说，Stack View的介绍值得首提。我知道有些开发者发现使用自动布局来设计复杂的用户界面很困难。Stack views正是为了帮助我们，使开发人员的工作变得更容易。<br><a id="more"></a></p>
+<p>Stack View提供了一个简化的接口将视图集合布局在任何一列或行。对于嵌入到Stack View的视图，你不再需要定义auto layout约束。Stack View管理其子视图的布局同时为你自动添加auto layout约束。这意味着子视图将能适应不同的屏幕尺寸。此外，您还可以将Stack View嵌入另一个Stack View来构建更复杂的用户界面。不要误会我的意思。这并不意味着你不需要处理的自动布局。你仍然需要定义Stack View布局约束。它只是从为每一个UI元素添加约束节省您的时间，使用户能够轻松地从布局添加/删除视图。</p>
+<p>Xcode中7提供了两种方式来使用Stack View。您可以从对象库中拖出一个Stack View（水平/垂直），并把它的拖到storyboard中。然后，您拖放视图对象，如标签，按钮，图像视图到Stack View中。另外，您也可以使用自动布局栏中的Stack选项。对于这种方法，您只需选择两个或多个视图对象，然后单击Stack选项。Interface Builder会将对象嵌入到Stack View中，并自动调整其大小。如果你还没有思绪关于如何使用堆栈视图，不用担心。我们将在本教程中介绍这两个方法。读下去，你就会很快明白我的意思。</p>
+<p>我假设你有autolayout的基础。如果没有，请首先阅读有关自动布局的<a href="http://http://www.appcoda.com/introduction-auto-layout/" target="_blank" rel="noopener">介绍文章</a>。</p>
+<h3 id="Demo-App"><a href="#Demo-App" class="headerlink" title="Demo App"></a>Demo App</h3><p>让我们先来看看我们要构建演示程序。在本教程中，我将告诉你如何像这样使用StackView布局一个用户界面：<br><img src="./stackview-1.png" align="center"><br><br><br></p>
+<p>你可以不使用StackView创建相同的UI。但正如你所看到的，StackView改变了你布局界面的方式。有在本教程中没有编码。我们将只专注于使用Interface Builder布局用户界面。</p>
+<p>首先，请下载<a href="https://www.dropbox.com/s/n8qeg6rsreatqfe/StackViewDemoStarter.zip?dl=0" target="_blank" rel="noopener">初始项目</a>。您需要使用的Xcode7来构建项目。如果你还没有安装它，请先下载它。项目模板非常简单。它仅预置的导航控制器和图像资源在image asset中。</p>
+<p>友情提示：样品照片由<a href="http://magdeleine.co/" target="_blank" rel="noopener">magdeleine.co</a>提供。</p>
+<h3 id="从对象库中添加Stack-Views"><a href="#从对象库中添加Stack-Views" class="headerlink" title="从对象库中添加Stack Views"></a>从对象库中添加Stack Views</h3><p>启动Xcode 7，打开Main.storyboard。从对象库中，将一个Verticle Stack View对象拖到storyboard视图控制器中。Stack view 可以排列子视图（称为arranged views）在纵向和横向的布局。因为我们要垂直布局中的图像视图，我们选择Verticle堆栈视图对象。<br><img src="./stackview-2.png" align="center"><br><br><br></p>
+<p>接下来，从对象库中拖一个imageview。当你把imageview拖进stack view，imageview自动调整大小。重复相同的步骤，再增加两个imageview到stack view。这时候神奇发生了。当您添加另一个imageView，stack view自动调整imageView垂直的布局，为你建立必要的约束。酷吧？</p>
+<h3 id="为Stack-View添加约束"><a href="#为Stack-View添加约束" class="headerlink" title="为Stack View添加约束"></a>为Stack View添加约束</h3><p>Stack View帮助开发人员添加每个布局对象的约束。话虽这么说，你需要提供堆栈视图的布局约束。对于我们刚才添加的Stack View，我们将添加如下布局约束：</p>
+<ul>
+<li>设置Stack View的顶部，左侧和右侧间距约束，使得Stack View位于屏幕的顶部。</li>
+<li>设置Stack View的高度约​​束，使得Stack View高为父视图高的70％。</li>
+</ul>
+<p>现在选择StackView，然后单击布局按钮的Pin按钮。分别设置的顶部，左侧和右侧的约束为10，0和0。然后点击“Add 3 Constraints”按钮来添加约束。<br><img src="./stackview-3.png" align="center"><br><br><br></p>
+<p>StackView的当前位置不匹配约束。您可以直接点击警告标志（即黄色箭头）在文档大纲修复错位。</p>
+<p>要设置高度约​​束，选择Interface Builder的文档大纲。按住control从StackView拖到View。释放按钮后，选择的高度相等。<br><img src="./stackview-4.png" align="center"><br><br><br></p>
+<p>设置以后StackView的高度等于View的高度。然而，StackView应该只占View的高度的70％左右。因此，选择“StackView.height”约束，进入属性检查器。将值从乘数1.0更改为0.7。<br><img src="./stackview-5.png" align="center"><br><br><br></p>
+<h3 id="设置Stack-Views的属性"><a href="#设置Stack-Views的属性" class="headerlink" title="设置Stack Views的属性"></a>设置Stack Views的属性</h3><p>StackView看起来并不如预期。一旦你有一个StackView，你可以改变一些堆栈视图的属性来改变它的外观。Axis选项表示所排列的视图是否应该布局垂直或水平。Alignment选项控制视图如何对齐排列。例如，如果它被设置为Leading，StackView对齐其前沿排列其子视图。<br><img src="./stackview-6.png" align="center"><br><br><br></p>
+<p>Distribution选项定义排列的视图的大小和位置。缺省情况下，它被设置为Fill。在这种情况下，StackView会尽可能满足其可用空间排列所有子视图。现在，改变这个选项为Fill Equally。StackView会自动调整子视图的排列和大小，子视图相同的大小。<br><img src="./stackview-7.png" align="center"><br><br><br></p>
+<p>Spacing选项允许你设置视图之间的间距。其值更改为10为image views之间添加额外的间距。<br><img src="./stackview-8.png" align="center"><br><br><br></p>
+<h3 id="设置图片"><a href="#设置图片" class="headerlink" title="设置图片"></a>设置图片</h3><p>接下来，让我们为image views添加相应的图片。选择第一个imageView，然后转到属性检查器。改变image选项“nature-1”和将Mode设置为“Aspect Fill”。同时启用“Clip Subviews”。对其余image views重复相同的步骤操作，设置Image为“nature-2”和“nature-3”。您的布局应该是这样的：<br><img src="./stackview-9.png" align="center"><br><br><br></p>
+<p>现在，您可以运行该项目有一个快速浏览一下。尝试在不同的模拟器测试项目，用户界面​​完全适合于各种设备。StackView已为你自动添加布局约束。其实你可以启动视图调试选项（在运行你的应用程序），查看添加image views的布局约束。<br><img src="./stackview-10.png" align="center"><br><br><br></p>
+<h3 id="使用嵌套的Stack-Views布局Labels和Buttons"><a href="#使用嵌套的Stack-Views布局Labels和Buttons" class="headerlink" title="使用嵌套的Stack Views布局Labels和Buttons"></a>使用嵌套的Stack Views布局Labels和Buttons</h3><p>我们还没有完成。有几个Label和Button需要添加到用户界面。现在从对象库的视图中拖一个Label。命名为“Nature”将它移动到StackView的右下方。通过改变其字体大小为30使Label大一点。接下来，拖一个Label至视图并命名为“A collection of nature photos from magdeleine.co”。将它放置在Naturelabel下面。</p>
+<p>同样，你也不需要为这些Label设置约束。让SackView替你去完成。在本教程的一开始，我提到，有使用SackView有两种方式。此前，从对象库中的添加SackView。现在，我会告诉你另一种方法。</p>
+<p>按住Command键来选择这两个Label，然后单击布局栏中的堆栈按钮。Interface Builder自动将这些Label嵌入到垂直SackView。<br><img src="./stackview-11.gif" align="center"><br><br><br></p>
+<p>接下来，向这个视图中添加两个button。命名一个为“Like”，另一个为“Share”。同样，我们也不想处理自动布局。因此，选择这两个button，然后单击布局栏中的Stack按钮在水平StackView中嵌入两个按钮。您可以通过设置StackView的间距值为5给按钮​​之间添加间隔。<br><img src="./stackview-12.png" align="center"><br><br><br></p>
+<p>如果你看一下最终的布局，两个Button应该放在 Nature Label旁边。你怎么能做到这一点？StackView优秀的地方是你可以将多个StackView嵌套在一起打造你想要的精确布局。现在拖动含Button的StackView到Nature Label的视图中。一旦你松开按键，StackView将在另一个StackView嵌入。Nature Label和Button，选择这两个视图，使用Stack选项将它们添加到StackView中。默认情况下，新的堆栈视图的轴被设置为垂直。在属性检查器中，将其更改为水平的，使Like和Share Button将位于Nature label右边。<br><img src="./stackview-13.gif" align="center"><br><br><br></p>
+<p>Button还需要与Nature Label的基线对齐。选择StackView的Alignment选项将值由Fill改为First Baseline。另外，改变Spacing选项值为20来增加Nature Label与Button之间间距。<br><img src="./stackview-14.png" align="center"><br><br><br></p>
+<p>正如你所看到的，我们只需要使用嵌套StackView来构建你期望的精确布局。</p>
+<p>最后，我们添加含有imageView的StackView与含有Label和Button的StackView之间的约束，选中这两个StackView然后单击布局按钮的Pin按钮。分别设置顶部，左，右的值为0,8和0。<br><img src="./stackview-15.png" align="center"><br><br><br></p>
+<p>为了确保说明Label自动调整大小，更改Lines选项为0和Line Breaks选项为Word Wrap。好的！您已经完成了UI设计。现在运行项目，看看结果。如果你一切配置正确，您的用户界面应该是这样的：<br><img src="./stackview-16.png" align="center"><br><br><br></p>
+<p>如果您在横向iPhone上查看布局，用户界面​​变成这样：<br><img src="./stackview-17.png" align="center"><br><br><br></p>
+<p>它看起来不错，但是如果能像这样水平的排列是不是更棒？<br><img src="./stackview-18.png" align="center"><br><br><br></p>
+<h3 id="使用Size-Classe适配StackView"><a href="#使用Size-Classe适配StackView" class="headerlink" title="使用Size Classe适配StackView"></a>使用Size Classe适配StackView</h3><p>为iPhone横向实现不同布局，我们必须使StackView具有适应性。在iOS中8，介绍了size classe的概念。下表显示了iOS设备及其相应size class：<br><img src="./stackview-19.png" align="center"><br><br><br></p>
+<p>您可以使用size classe提供指定的布局覆盖原有的基础布局中的设计。在这种情况下，我们要为这两个size class将StackView（含有imageView）的Sxis由vertical改为horizontal：</p>
+<ul>
+<li>Compact width-Compact height</li>
+<li>Regular width-Compact height</li>
+</ul>
+<p>选中StackVIew并转到属性检查器。点击Axis选项左侧的+按钮。选择Any Width&gt;Compact height，然后设置这个尺寸级别的Axis为Horizontal。any width 包括compact和regular width。<br><img src="./stackview-20.gif" align="center"><br><br><br></p>
+<p>通过这样做，当你的iPhone旋转的时候StackView将水平排列这些imageView。在不同的设备上运行并查看结果。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>在本教程中，我已经给你介绍了StackView，并就如何使用这种新的组件布局UI进行了演示。StackView用很少的约束简化你构建在iOS用户界面的方式。你可能有一个问题是，你何时应使用StackView？苹果工程师建议开发人员除了在确实需要约束的时候，其他时候优先采用StackView。开始使用StackView设计您的用户界面！我相信你会爱上它。</p>
+<p>作为参考，你可以在<a href="https://github.com/appcoda/uistackview-demo" target="_blank" rel="noopener">这里下载Xcode项目</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/翻译/" rel="tag"># 翻译</a>
+          
+            <a href="/tags/布局/" rel="tag"># 布局</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/10/如何使用Xcode的Targets来管理开发和生产构建/" rel="next" title="如何使用Xcode的Targets来管理开发和生产构建">
+                <i class="fa fa-chevron-left"></i> 如何使用Xcode的Targets来管理开发和生产构建
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/11/03/react学习之组件生命周期/" rel="prev" title="react学习之组件生命周期">
+                react学习之组件生命周期 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">OceanOver</p>
+              <p class="site-description motion-element" itemprop="description">个人博客，记录学习历程</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Demo-App"><span class="nav-number">1.</span> <span class="nav-text">Demo App</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#从对象库中添加Stack-Views"><span class="nav-number">2.</span> <span class="nav-text">从对象库中添加Stack Views</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为Stack-View添加约束"><span class="nav-number">3.</span> <span class="nav-text">为Stack View添加约束</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置Stack-Views的属性"><span class="nav-number">4.</span> <span class="nav-text">设置Stack Views的属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设置图片"><span class="nav-number">5.</span> <span class="nav-text">设置图片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用嵌套的Stack-Views布局Labels和Buttons"><span class="nav-number">6.</span> <span class="nav-text">使用嵌套的Stack Views布局Labels和Buttons</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用Size-Classe适配StackView"><span class="nav-number">7.</span> <span class="nav-text">使用Size Classe适配StackView</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">8.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">OceanOver</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v6.6.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="正则表达式可以极大的提高复杂文本分析的效率，快速匹配出复杂的字符串。">
+<meta name="keywords" content="JavaScript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript 学习之正则篇">
+<meta property="og:url" content="http://yoursite.com/2017/01/07/JavaScript-学习之正则篇/index.html">
+<meta property="og:site_name" content="OceanOver&#39;s Blog">
+<meta property="og:description" content="正则表达式可以极大的提高复杂文本分析的效率，快速匹配出复杂的字符串。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-12-08T14:54:32.986Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JavaScript 学习之正则篇">
+<meta name="twitter:description" content="正则表达式可以极大的提高复杂文本分析的效率，快速匹配出复杂的字符串。">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/01/07/JavaScript-学习之正则篇/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>JavaScript 学习之正则篇 | OceanOver's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">OceanOver's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">个人博客</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/07/JavaScript-学习之正则篇/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="OceanOver">
+      <meta itemprop="description" content="个人博客，记录学习历程">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="OceanOver's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">JavaScript 学习之正则篇
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2017-01-07 11:40:16" itemprop="dateCreated datePublished" datetime="2017-01-07T11:40:16+00:00">2017-01-07</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-12-08 14:54:32" itemprop="dateModified" datetime="2018-12-08T14:54:32+00:00">2018-12-08</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>正则表达式可以极大的提高复杂文本分析的效率，快速匹配出复杂的字符串。</p>
+</blockquote>
+<a id="more"></a>
+<h4 id="基础语法"><a href="#基础语法" class="headerlink" title="基础语法"></a>基础语法</h4><table>
+<thead>
+<tr>
+<th style="text-align:center">字符</th>
+<th style="text-align:left">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><code>\</code></td>
+<td style="text-align:left">将下一个字符标记为一个特殊字符、或一个原义字符。例如，“n”匹配字符“n”。“\n”匹配一个换行符。序列“\”匹配“\”而“(”则匹配“(”。</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>^</code></td>
+<td style="text-align:left">匹配输入字符串的开始位置。</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>$</code></td>
+<td style="text-align:left">匹配输入字符串的结束位置。</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>{n}</code></td>
+<td style="text-align:left">n是一个非负整数。匹配确定的n次。例如，“o{2}”不能匹配“Bob”中的“o”，但是能匹配“food”中的两个o。</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>{n,}</code></td>
+<td style="text-align:left">n是一个非负整数。至少匹配n次。例如，“o{2,}”不能匹配“Bob”中的“o”，但能匹配“foooood”中的所有o。“o{1,}”等价于“o+”。“o{0,}”则等价于“o*”。</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>{n,m}</code></td>
+<td style="text-align:left">m和n均为非负整数，其中n&lt;=m。最少匹配n次且最多匹配m次。例如，“o{1,3}”将匹配“fooooood”中的前三个o。“o{0,1}”等价于“o?”。请注意在逗号和两个数之间不能有空格。</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>*</code></td>
+<td style="text-align:left">匹配前面的子表达式零次或多次。例如，zo<em>能匹配“z”、“zo”以及“zoo”。</em>等价于{0,}。</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>+</code></td>
+<td style="text-align:left">匹配前面的子表达式一次或多次。例如，“zo+”能匹配“zo”以及“zoo”，但不能匹配“z”。+等价于{1,}。</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>?</code></td>
+<td style="text-align:left">匹配前面的子表达式零次或一次。例如，“do(es)?”可以匹配“do”或“does”中的“do”。?等价于{0,1}。</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>?</code></td>
+<td style="text-align:left">当该字符紧跟在任何一个其他限制符（*,+,?，{n}，{n,}，{n,m}）后面时，匹配模式是非贪婪的。非贪婪模式尽可能少的匹配所搜索的字符串，而默认的贪婪模式则尽可能多的匹配所搜索的字符串。例如，对于字符串“oooo”，“o+?”将匹配单个“o”，而“o+”将匹配所有“o”。</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>.</code></td>
+<td style="text-align:left">匹配除“\n”之外的任何单个字符。要匹配包括“\n”在内的任何字符，请使用像“(.｜\n)”的模式。</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>(pattern)</code></td>
+<td style="text-align:left">匹配pattern并获取这一匹配的子字符串。该子字符串用于向后引用。要匹配圆括号字符，请使用 \( 和 \)。</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>x｜y</code></td>
+<td style="text-align:left">匹配x或y。例如，“z｜food”能匹配“z”或“food”。“(z｜f)ood”则匹配“zood”或“food”。</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>[xyz]</code></td>
+<td style="text-align:left">字符集合（character class）。匹配所包含的任意一个字符。例如，“[abc]”可以匹配“plain”中的“a”。其中特殊字符仅有反斜线\保持特殊含义，用于转义字符。其它特殊字符如星号、加号、各种括号等均作为普通字符。脱字符^如果出现在首位则表示负值字符集合；如果出现在字符串中间就仅作为普通字符。连字符 - 如果出现在字符串中间表示字符范围描述；如果如果出现在首位则仅作为普通字符。</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>[^xyz]</code></td>
+<td style="text-align:left">排除型（negate）字符集合。匹配未列出的任意字符。例如，“[^abc]”可以匹配“plain”中的“plin”。</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>[^a-z]</code></td>
+<td style="text-align:left">排除型的字符范围。匹配任何不在指定范围内的任意字符。例如，“[^a-z]”可以匹配任何不在“a”到“z”范围内的任意字符。</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>\w</code></td>
+<td style="text-align:left">匹配包括下划线的任何单词字符。等价于 [a-zA-Z0-9_]。</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>\W</code></td>
+<td style="text-align:left">匹配任何非单词字符。等价于 [^a-zA-Z0-9_]。</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>\s</code></td>
+<td style="text-align:left">匹配任何空白字符，包括空格、制表符、换页符等等。等价于 [ \f\n\r\t\v]。</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>\S</code></td>
+<td style="text-align:left">匹配任何非空白字符。等价于 [^ \f\n\r\t\v]。</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>\d</code></td>
+<td style="text-align:left">匹配一个数字字符。等价于 [0-9]。</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>\D</code></td>
+<td style="text-align:left">匹配一个非数字字符。等价于 [^0-9]。</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>\b</code></td>
+<td style="text-align:left">匹配一个单词边界，也就是指单词和空格间的位置。例如， ‘er\b’ 可以匹配”never” 中的 ‘er’，但不能匹配 “verb” 中的 ‘er’。</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>\B</code></td>
+<td style="text-align:left">匹配非单词边界。’er\B’ 能匹配 “verb” 中的 ‘er’，但不能匹配 “never” 中的 ‘er’。</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>\&lt;</code></td>
+<td style="text-align:left">表示词首。 例如\&lt;abc表示以abc为首的词。</td>
+</tr>
+<tr>
+<td style="text-align:center"><code>\&gt;</code></td>
+<td style="text-align:left">表示词尾。 例如abc>表示以abc结尾的词。</td>
+</tr>
+</tbody>
+</table>
+<h4 id="优先级"><a href="#优先级" class="headerlink" title="优先级"></a>优先级</h4><p>优先级为从上到下从左到右，依次降低：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">运算符</th>
+<th style="text-align:center">说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">‘\’</td>
+<td style="text-align:center">转义符</td>
+</tr>
+<tr>
+<td style="text-align:left">‘(), (?:), (?=), []’</td>
+<td style="text-align:center">括号和中括号</td>
+</tr>
+<tr>
+<td style="text-align:left">‘*、+、?、{n}、{n,}、{n,m}’</td>
+<td style="text-align:center">限定符</td>
+</tr>
+<tr>
+<td style="text-align:left">‘^、$、\任何元字符’</td>
+<td style="text-align:center">定位点和序列</td>
+</tr>
+<tr>
+<td style="text-align:left">‘｜’</td>
+<td style="text-align:center">选择</td>
+</tr>
+</tbody>
+</table>
+<h4 id="创建正则表达式"><a href="#创建正则表达式" class="headerlink" title="创建正则表达式"></a>创建正则表达式</h4><ul>
+<li><p>字面量</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> expression = <span class="regexp">/pattern/</span>flags ;</span><br><span class="line"><span class="comment">//pattern 是要匹配的字符串模式</span></span><br><span class="line"><span class="comment">//flags用来标记正则表达式的行为: i 不区分大小写；g 表示全局搜索 ；m 表示多行模式</span></span><br><span class="line"><span class="keyword">var</span> reg = <span class="regexp">/ab/i</span>; <span class="comment">//表示匹配 字符串 'ab' 不区分大小写</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>RegExp对象的构造函数</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> expression = <span class="keyword">new</span> <span class="built_in">RegExp</span>(pattern,flags)</span><br><span class="line"><span class="comment">//flags 和直接量语法一致</span></span><br><span class="line"><span class="comment">//pattern 可以是字符串模式，也可以是一个标准的正则表达式，后者必须省略 flags</span></span><br><span class="line"><span class="comment">//两种写法均可</span></span><br><span class="line"><span class="keyword">var</span> reg = <span class="keyword">new</span> <span class="built_in">RegExp</span>(<span class="string">'ab'</span>,<span class="string">'i'</span>)  </span><br><span class="line"><span class="keyword">var</span> reg = <span class="keyword">new</span> <span class="built_in">RegExp</span>(<span class="regexp">/ab/i</span>)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="RegExp的方法"><a href="#RegExp的方法" class="headerlink" title="RegExp的方法"></a>RegExp的方法</h4><ul>
+<li>exec()<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">该方法对一个指定的字符串执行一个正则表达式，执行正则表达式的匹配，返回一个数组。没有匹配到则返回 null，返回的数组是Array的实例，而且返回值还包含另外2个属性：index： 匹配到的字符位于原始字符串的基于0的索引值 和 input： 原始字符串`。</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> myRe = <span class="regexp">/ab*/g</span>;</span><br><span class="line"><span class="keyword">var</span> str = <span class="string">'abbcdefabh'</span>;</span><br><span class="line"><span class="keyword">var</span> oo = myRe.exec(str);</span><br><span class="line"><span class="built_in">console</span>.log(oo);</span><br><span class="line"><span class="comment">//[ 'abb', index: 0, input: 'abbcdefabh' ]</span></span><br><span class="line">oo = myRe.exec(str);</span><br><span class="line"><span class="built_in">console</span>.log(oo);</span><br><span class="line"><span class="comment">//[ 'ab', index: 7, input: 'abbcdefabh' ]</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>当正则表达式使用 “g” 标志时，可以多次执行 exec 方法来查找同一个字符串中的成功匹配。当你这样做时，查找将从正则表达式的 lastIndex 属性指定的位置开始。<br>不加”g” 标志的时候，每次都是从 0 开始，所以各种属性也不会改变</p>
+</blockquote>
+<ul>
+<li>test()<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">接收一个字符串参数，regexObj.exec(str),如果包含正则表达式的一个匹配结果返回true，否则false</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> pattern = <span class="regexp">/java/i</span>;</span><br><span class="line"><span class="keyword">var</span> result = pattern.test(<span class="string">'javascript'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(result); <span class="comment">//true</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>toString()<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RegExp 对象覆盖了 Object 对象的 toString() 方法，并没有继承 Object.prototype.toString()。对于 RegExp 对象，toString 方法返回一个该正则表达式的字面量。</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">myExp = <span class="keyword">new</span> <span class="built_in">RegExp</span>(<span class="string">"a+b+c"</span>);</span><br><span class="line"><span class="built_in">console</span>.log(myExp.toString());  <span class="comment">// 结果: /a+b+c/</span></span><br><span class="line"></span><br><span class="line">foo = <span class="keyword">new</span> <span class="built_in">RegExp</span>(<span class="string">"bar"</span>, <span class="string">"g"</span>);</span><br><span class="line"><span class="built_in">console</span>.log(foo.toString());   <span class="comment">// 结果: /bar/g</span></span><br></pre></td></tr></table></figure>
+<h4 id="用于模式匹配的String方法"><a href="#用于模式匹配的String方法" class="headerlink" title="用于模式匹配的String方法"></a>用于模式匹配的String方法</h4><ul>
+<li>String.search()<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">参数：一个正则表达式。</span><br><span class="line">返回：它返回匹配到的位置索引，或者在失败时返回-1。</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//查找连续2个数字的位置</span></span><br><span class="line"><span class="string">'a1b2c33d4'</span>.search(<span class="regexp">/(\d)&#123;2&#125;/</span>)</span><br><span class="line"><span class="comment">// 5</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>String.replace()<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">一个在字符串中执行查找匹配的String方法，并且使用替换字符串替换掉匹配到的子字符串。</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">'121212'</span>.replace(<span class="regexp">/1/g</span>,<span class="string">','</span>)</span><br><span class="line"><span class="comment">//",2,2,2"</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>String.match()<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">参数：一个正则表达式。一个在字符串中执行查找匹配的String方法，它返回一个数组或者在未匹配到时返回null。</span><br><span class="line">设置g则返回所有匹配结果，否则数组的第一个元素是匹配的字符串，剩下的是圆括号中的子表达式</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> matchResult = <span class="string">'121212'</span>.match(<span class="regexp">/1/g</span>)</span><br><span class="line"><span class="built_in">console</span>.log(matchResult);</span><br><span class="line"><span class="comment">//["1", "1", "1"]</span></span><br><span class="line">matchResult = <span class="string">'121212'</span>.match(<span class="regexp">/1/</span>)</span><br><span class="line"><span class="built_in">console</span>.log(matchResult);</span><br><span class="line"><span class="comment">//[ '1', index: 0, input: '121212' ]</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>String.split()<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">一个使用正则表达式或者一个固定字符串分隔一个字符串，并将分隔后的子字符串存储到数组中</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//以数字分割字符串</span></span><br><span class="line"><span class="string">'a1b2c33d4'</span>.split(<span class="regexp">/\d*/</span>)</span><br><span class="line"><span class="comment">//["a", "b", "c", "d", ""]</span></span><br></pre></td></tr></table></figure>
+<h4 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h4><p><a href="http://www.jianshu.com/p/45cccb9ca3e9" target="_blank" rel="noopener">常用javascript正则表达式</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/JavaScript/" rel="tag"># JavaScript</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/07/ES6函数拓展-箭头函数/" rel="next" title="ES6函数拓展 - 箭头函数">
+                <i class="fa fa-chevron-left"></i> ES6函数拓展 - 箭头函数
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/08/Async-Await-优雅的异步代码/" rel="prev" title="Async/Await 优雅的异步代码">
+                Async/Await 优雅的异步代码 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">OceanOver</p>
+              <p class="site-description motion-element" itemprop="description">个人博客，记录学习历程</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#基础语法"><span class="nav-number">1.</span> <span class="nav-text">基础语法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#优先级"><span class="nav-number">2.</span> <span class="nav-text">优先级</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建正则表达式"><span class="nav-number">3.</span> <span class="nav-text">创建正则表达式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RegExp的方法"><span class="nav-number">4.</span> <span class="nav-text">RegExp的方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#用于模式匹配的String方法"><span class="nav-number">5.</span> <span class="nav-text">用于模式匹配的String方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#实例"><span class="nav-number">6.</span> <span class="nav-text">实例</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">OceanOver</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v6.6.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

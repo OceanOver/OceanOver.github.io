@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="概述学习iOS时我们会去研究视图控制器的生命周期，理解控制器从创建到销毁。联想到React，其组件也有从创建到销毁的过程。在组件的生命周期中，随着组件props或state的改变，其DOM表现形式也会有所变化。在生命周期的不同阶段，React提供了不同的处理函数使我们能够实现对组件整个生命周期内的控制和处理。">
+<meta name="keywords" content="React">
+<meta property="og:type" content="article">
+<meta property="og:title" content="react学习之组件生命周期">
+<meta property="og:url" content="http://yoursite.com/2016/11/03/react学习之组件生命周期/index.html">
+<meta property="og:site_name" content="OceanOver&#39;s Blog">
+<meta property="og:description" content="概述学习iOS时我们会去研究视图控制器的生命周期，理解控制器从创建到销毁。联想到React，其组件也有从创建到销毁的过程。在组件的生命周期中，随着组件props或state的改变，其DOM表现形式也会有所变化。在生命周期的不同阶段，React提供了不同的处理函数使我们能够实现对组件整个生命周期内的控制和处理。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-12-08T14:54:32.998Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="react学习之组件生命周期">
+<meta name="twitter:description" content="概述学习iOS时我们会去研究视图控制器的生命周期，理解控制器从创建到销毁。联想到React，其组件也有从创建到销毁的过程。在组件的生命周期中，随着组件props或state的改变，其DOM表现形式也会有所变化。在生命周期的不同阶段，React提供了不同的处理函数使我们能够实现对组件整个生命周期内的控制和处理。">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/11/03/react学习之组件生命周期/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>react学习之组件生命周期 | OceanOver's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">OceanOver's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">个人博客</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/11/03/react学习之组件生命周期/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="OceanOver">
+      <meta itemprop="description" content="个人博客，记录学习历程">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="OceanOver's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">react学习之组件生命周期
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-11-03 11:51:18" itemprop="dateCreated datePublished" datetime="2016-11-03T11:51:18+00:00">2016-11-03</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-12-08 14:54:32" itemprop="dateModified" datetime="2018-12-08T14:54:32+00:00">2018-12-08</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h3><p>学习iOS时我们会去研究视图控制器的生命周期，理解控制器从创建到销毁。联想到React，其组件也有从创建到销毁的过程。在组件的生命周期中，随着组件props或state的改变，其DOM表现形式也会有所变化。在生命周期的不同阶段，React提供了不同的处理函数使我们能够实现对组件整个生命周期内的控制和处理。<a id="more"></a></p>
+<p>React组件的生命周期分为：创建期、存在期、销毁&amp;清理期，对应组件生命周期里的三个状态：</p>
+<ul>
+<li>Mounting：已插入真实 DOM</li>
+<li>Updating：正在被重新渲染</li>
+<li>Unmounting：已移出真实 DOM</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">var App = React.createClass(&#123;</span><br><span class="line">  componentWillMount: function()&#123;</span><br><span class="line">    // 初始化期，组件加载前调用</span><br><span class="line">  &#125;,</span><br><span class="line">  componentWillUpdate: function()&#123;</span><br><span class="line">    // 存在期，组件状态改变后重新渲染前调用</span><br><span class="line">  &#125;,</span><br><span class="line">  render: function () &#123;</span><br><span class="line">    // 初始化期或存在期调用</span><br><span class="line">    return (</span><br><span class="line">      &lt;h1&gt;itbilu.com&lt;/h1&gt;</span><br><span class="line">    )</span><br><span class="line">  &#125;,</span><br><span class="line">  componentWillUnmount: function ()&#123;</span><br><span class="line">    // 销毁&amp;清理期调用</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>React 为每个状态都提供了两种处理函数，will 函数在进入状态之前调用，did 函数在进入状态之后调用，三种状态共计五种处理函数。</p>
+<ul>
+<li>componentWillMount()</li>
+<li>componentDidMount()</li>
+<li>componentWillUpdate(object nextProps, object nextState)</li>
+<li>componentDidUpdate(object prevProps, object prevState)</li>
+<li>componentWillUnmount()</li>
+</ul>
+<p>此外，React 还提供两种特殊状态的处理函数。</p>
+<ul>
+<li>componentWillReceiveProps(object nextProps)：已加载组件收到新的参数时调用</li>
+<li>shouldComponentUpdate(object nextProps, object nextState)：组件判断是否重新渲染时调用（灵活地利用该处理函数可以优化性能）</li>
+</ul>
+<h3 id="组件创建"><a href="#组件创建" class="headerlink" title="组件创建"></a>组件创建</h3><p>当组件被创建、首次渲染时，都会有一系列方法会被调用。</p>
+<p>当首次创建一个组件时依次执行：</p>
+<ul>
+<li>getDefaultProps</li>
+<li>getInitialState</li>
+<li>componentWillMount</li>
+<li>render</li>
+<li>componentDidMount</li>
+</ul>
+<h4 id="getDefaultProps"><a href="#getDefaultProps" class="headerlink" title="getDefaultProps"></a>getDefaultProps</h4><p>该方法只在首次创建实例被调用一次，一般用于顶级组件（没有父组件的组件）进行处理，实例化组件时这个方法会对返回默认的props属性。</p>
+<h4 id="getInitialState"><a href="#getInitialState" class="headerlink" title="getInitialState"></a>getInitialState</h4><p>实例化组件时会被调用一次。通过这个方法，可以初始化每个实例的state。getInitialState在每次创建实例时都会被调用。</p>
+<h4 id="componentWillMount"><a href="#componentWillMount" class="headerlink" title="componentWillMount"></a>componentWillMount</h4><p>首次渲染（首次挂载）前被调用，通过这个方法可以在组件被render前最后一次修改组件的state。</p>
+<h4 id="render"><a href="#render" class="headerlink" title="render"></a>render</h4><p>render方法会创建一个虚拟DOM，其返回值可以是：null、false或React组件，只能返回一个顶级组件。React会将它和真实DOM做比较，以判断是否需要对DOM进行修改。</p>
+<h4 id="componentDidMount"><a href="#componentDidMount" class="headerlink" title="componentDidMount"></a>componentDidMount</h4><p>真实的DOM已经被渲染后该方法被调用，可以在componentDidMount方法内部通过this.getDOMNode()访问到它。当需要访问原始DOM属性，可以将这些操作挂载到这个方法上。</p>
+<h3 id="存在期"><a href="#存在期" class="headerlink" title="存在期"></a>存在期</h3><p>在这个时期，组件已经渲染好并且用户可以与它进行交互，用户的操作会改变组件的state，这时会有新的state流注入到组件树，这时会有一些方法会被触发。</p>
+<p>state改变后，会有以下方法会被触发：</p>
+<ul>
+<li>componentWillReceiveProps</li>
+<li>shouldComponentUpdate</li>
+<li>componentWillUpdate</li>
+<li>render</li>
+<li>componentDidUpdate</li>
+</ul>
+<h4 id="componentWillReceiveProps"><a href="#componentWillReceiveProps" class="headerlink" title="componentWillReceiveProps"></a>componentWillReceiveProps</h4><p>当组件的props属性被修改时，该方法会被调用，这时我们可以获得修改的props对象和更新的state。</p>
+<h4 id="shouldComponentUpdate"><a href="#shouldComponentUpdate" class="headerlink" title="shouldComponentUpdate"></a>shouldComponentUpdate</h4><p>该方法接收到修改的props对象和更新的state，当我们确定组件不需要重新渲染新的props或state时，可以通过该方法返回false，这样React就会跳过调用render方法及之后的componentWillUpdate和componentDidUpdate方法。</p>
+<h4 id="componentWillUpdate"><a href="#componentWillUpdate" class="headerlink" title="componentWillUpdate"></a>componentWillUpdate</h4><p>发生在组件在接收到新的props或state后，render方法进行渲染之前</p>
+<h4 id="componentDidUpdate"><a href="#componentDidUpdate" class="headerlink" title="componentDidUpdate"></a>componentDidUpdate</h4><p>与componentDidMount方法类似，这个方法使我们可以获取到已经渲染好的DOM。</p>
+<h3 id="组件销毁"><a href="#组件销毁" class="headerlink" title="组件销毁"></a>组件销毁</h3><p>当使用完一个组件时，需要将其从DOM中卸载并销毁，这时只有componentWillUnmount一个函数会被调用，通过这个方法我们可以完成一些必要的销毁和清理工作，如：清除componentDidMount中添加的任务等。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/React/" rel="tag"># React</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/" rel="next" title="iOS9和Xcode7中 Stack Views 介绍">
+                <i class="fa fa-chevron-left"></i> iOS9和Xcode7中 Stack Views 介绍
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/01/07/Promise学习之bluebird-基础篇/" rel="prev" title="Promise学习之bluebird(基础篇)">
+                Promise学习之bluebird(基础篇) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">OceanOver</p>
+              <p class="site-description motion-element" itemprop="description">个人博客，记录学习历程</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#概述"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#组件创建"><span class="nav-number">2.</span> <span class="nav-text">组件创建</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#getDefaultProps"><span class="nav-number">2.1.</span> <span class="nav-text">getDefaultProps</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#getInitialState"><span class="nav-number">2.2.</span> <span class="nav-text">getInitialState</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#componentWillMount"><span class="nav-number">2.3.</span> <span class="nav-text">componentWillMount</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#render"><span class="nav-number">2.4.</span> <span class="nav-text">render</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#componentDidMount"><span class="nav-number">2.5.</span> <span class="nav-text">componentDidMount</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#存在期"><span class="nav-number">3.</span> <span class="nav-text">存在期</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#componentWillReceiveProps"><span class="nav-number">3.1.</span> <span class="nav-text">componentWillReceiveProps</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#shouldComponentUpdate"><span class="nav-number">3.2.</span> <span class="nav-text">shouldComponentUpdate</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#componentWillUpdate"><span class="nav-number">3.3.</span> <span class="nav-text">componentWillUpdate</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#componentDidUpdate"><span class="nav-number">3.4.</span> <span class="nav-text">componentDidUpdate</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#组件销毁"><span class="nav-number">4.</span> <span class="nav-text">组件销毁</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">OceanOver</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v6.6.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

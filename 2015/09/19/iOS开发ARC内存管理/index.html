@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="ARC  内存管理    在了解ARC之前，先了解OC内存管理里面的对象生命周期、引用计数、对象所有权 ，（自行查阅相关资料） 本文简单介绍iOS开发中ARC(Automatic Reference Counting，自动引用计数)内存管理的一些要点，所以不会讲的很全面。详细的关于ARC的信息请参见苹果的！官方文档与网上的其他教程）">
+<meta name="keywords" content="内存,基础">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发ARC内存管理">
+<meta property="og:url" content="http://yoursite.com/2015/09/19/iOS开发ARC内存管理/index.html">
+<meta property="og:site_name" content="OceanOver&#39;s Blog">
+<meta property="og:description" content="ARC  内存管理    在了解ARC之前，先了解OC内存管理里面的对象生命周期、引用计数、对象所有权 ，（自行查阅相关资料） 本文简单介绍iOS开发中ARC(Automatic Reference Counting，自动引用计数)内存管理的一些要点，所以不会讲的很全面。详细的关于ARC的信息请参见苹果的！官方文档与网上的其他教程）">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-12-08T14:54:32.998Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS开发ARC内存管理">
+<meta name="twitter:description" content="ARC  内存管理    在了解ARC之前，先了解OC内存管理里面的对象生命周期、引用计数、对象所有权 ，（自行查阅相关资料） 本文简单介绍iOS开发中ARC(Automatic Reference Counting，自动引用计数)内存管理的一些要点，所以不会讲的很全面。详细的关于ARC的信息请参见苹果的！官方文档与网上的其他教程）">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2015/09/19/iOS开发ARC内存管理/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>iOS开发ARC内存管理 | OceanOver's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">OceanOver's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">个人博客</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2015/09/19/iOS开发ARC内存管理/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="OceanOver">
+      <meta itemprop="description" content="个人博客，记录学习历程">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="OceanOver's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">iOS开发ARC内存管理
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2015-09-19 21:43:52" itemprop="dateCreated datePublished" datetime="2015-09-19T21:43:52+00:00">2015-09-19</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-12-08 14:54:32" itemprop="dateModified" datetime="2018-12-08T14:54:32+00:00">2018-12-08</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><code>ARC</code>  <code>内存管理</code>   </p>
+<p>在了解ARC之前，先了解OC内存管理里面的<code>对象生命周期</code>、<code>引用计数</code>、<code>对象所有权</code> ，（自行查阅相关资料）</p>
+<p>本文简单介绍iOS开发中ARC(Automatic Reference Counting，<code>自动引用计数</code>)内存管理的一些要点，所以不会讲的很全面。详细的关于ARC的信息请参见苹果的！<a href="https://developer.apple.com/library/ios/releasenotes/ObjectiveC/RN-TransitioningToARC/Introduction/Introduction.html" target="_blank" rel="noopener">官方文档</a>与网上的其他教程） <a id="more"></a></p>
+<h3 id="本文的主要内容："><a href="#本文的主要内容：" class="headerlink" title="本文的主要内容："></a>本文的主要内容：</h3><ul>
+<li>ARC的本质 </li>
+<li>__strong, __weak</li>
+<li>ARC与Toll-Free Bridging</li>
+</ul>
+<h3 id="ARC的本质"><a href="#ARC的本质" class="headerlink" title="ARC的本质"></a>ARC的本质</h3><p>先引用官方的关于ARC的一句描述： </p>
+<p>Automatic Reference Counting (ARC) is a compiler-level feature that simplifies the process of managing object lifetimes (memory management) in Cocoa applications. </p>
+<p>ARC是编译器（时）特性，而不是运行时特性（关于运行时<code>runtime</code>是深入学习iOS的重要内容，有兴趣的同学可以自己深入学习） </p>
+<p>ARC只是相对于MRC的改进，本质上依然是通过管理对象的引用计数。 </p>
+<p>如果你启用了ARC，只管像平常那样按需分配并使用对象，编译器会帮你插入retain和release语句。</p>
+<h3 id="strong-weak"><a href="#strong-weak" class="headerlink" title="__strong, __weak"></a>__strong, __weak</h3><p><strong>__strong</strong></p>
+<p>表示引用为强引用。对应在定义property时的”strong”。所有对象只有当没有任何一个强引用指向时，才会被释放。</p>
+<p>注意：如果在声明引用时不加修饰符，那么引用将默认是强引用。当需要释放强引用指向的对象时，需要将强引用置nil。</p>
+<p><strong>__weak</strong></p>
+<p>表示引用为弱引用。对应在定义property时用的”weak”。弱引用不会影响对象的释放，即只要对象没有任何强引用指向，该对象依然会被释放。不过好在，对象在被释放的同时，指向它的弱引用会自动被置nil，这个技术叫zeroing weak pointer。这样有效得防止无效指针、野指针的产生。__weak一般用在block、delegate关系中防止循环引用或者用来修饰指向由Interface Builder编辑与生成的UI控件。</p>
+<p><strong>注意</strong></p>
+<p>@property (nonatomic,strong) NSString *myString;</p>
+<p>NSString __strong *myString;</p>
+<p>__strong关键字和strong特性不可同时使用，内存管理的关键字和特性是不能一起使用的，两者相互排斥。<br></p>
+<p>苹果的文档中明确地写道：</p>
+<p>You should decorate variables correctly. When using qualifiers in an object variable declaration,</p>
+<p>the correct format is:</p>
+<p>ClassName * qualifier variableName;</p>
+<p>按照这个说明，要定义一个weak型的NSString引用，它的写法应该是：</p>
+<pre><code>NSString * __weak str = @&quot;hehe&quot;; // 正确！
+</code></pre><p>而不应该是：</p>
+<pre><code>__weak NSString *str = @&quot;hehe&quot;;  // 不推荐！
+</code></pre><p>我相信很多人都和我一样，从开始用ARC就一直用上面那种错误的写法。</p>
+<p>那这里就有疑问了，既然文档说是错误的，为啥编译器不报错呢？文档又解释道：</p>
+<p>Other variants are technically incorrect but are “forgiven” by the compiler. To understand the issue, see<a href="http://cdecl.org/" target="_blank" rel="noopener">http://cdecl.org/</a>.</p>
+<p>好吧，看来是考虑到很多人会用错，所以在编译器这边贴心地帮我们忽略并处理掉了这个错误。</p>
+<h3 id="ARC与Toll-Free-Bridging"><a href="#ARC与Toll-Free-Bridging" class="headerlink" title="ARC与Toll-Free Bridging"></a>ARC与Toll-Free Bridging</h3><p>ARC只对可保留的对象指针有效。例如：</p>
+<ul>
+<li>代码块指针</li>
+<li>Objective-C指针</li>
+</ul>
+<p>例如CoreFoundation指针，CF指针由人工管理，手动的CFRetain和CFRelease来管理，注，CF中没有autorelease。</p>
+<p>CocoaFoundation指针与CoreFoundation指针转换，需要考虑的是所指向对象所有权的归属。ARC提供了3个修饰符来管理。</p>
+<ol>
+<li><p>__bridge，什么也不做，仅仅是转换。此种情况下：</p>
+<ul>
+<li><p>从Cocoa转换到Core，需要人工CFRetain，否则，Cocoa指针释放后， 传出去的指针则无效。</p>
+</li>
+<li><p>从Core转换到Cocoa，需要人工CFRelease，否则，Cocoa指针释放后，对象引用计数仍为1，不会被销毁。</p>
+</li>
+</ul>
+</li>
+<li><p>__bridge_retained，转换后自动调用CFRetain，即帮助自动解决上述i的情形。</p>
+</li>
+<li><p>__bridge_transfer，转换后自动调用CFRelease，即帮助自动解决上述ii的情形。</p>
+</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/内存/" rel="tag"># 内存</a>
+          
+            <a href="/tags/基础/" rel="tag"># 基础</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/09/19/从iOS的内存说起/" rel="next" title="从iOS的内存说起">
+                <i class="fa fa-chevron-left"></i> 从iOS的内存说起
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/09/20/NSString内存相关特性strong、copy/" rel="prev" title="NSString内存相关特性strong、copy">
+                NSString内存相关特性strong、copy <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">OceanOver</p>
+              <p class="site-description motion-element" itemprop="description">个人博客，记录学习历程</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#本文的主要内容："><span class="nav-number">1.</span> <span class="nav-text">本文的主要内容：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ARC的本质"><span class="nav-number">2.</span> <span class="nav-text">ARC的本质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#strong-weak"><span class="nav-number">3.</span> <span class="nav-text">__strong, __weak</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ARC与Toll-Free-Bridging"><span class="nav-number">4.</span> <span class="nav-text">ARC与Toll-Free Bridging</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">OceanOver</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v6.6.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

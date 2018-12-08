@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.6.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.6.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.6.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.6.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.6.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="原文：How to Use Xcode Targets to Manage Development and Production Builds 参加CocoaChina翻译活动时所译   编者提示：这篇文章由Eugene Trapeznikov贡献。想象一下，你已经完成了您的应用程序的开发和测试，你现在准备提交生产版本。问题是，一些web服务的url指向测试服务器，同时API密钥被配置用于测试环">
+<meta name="keywords" content="翻译,技巧">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何使用Xcode的Targets来管理开发和生产构建">
+<meta property="og:url" content="http://yoursite.com/2016/04/10/如何使用Xcode的Targets来管理开发和生产构建/index.html">
+<meta property="og:site_name" content="OceanOver&#39;s Blog">
+<meta property="og:description" content="原文：How to Use Xcode Targets to Manage Development and Production Builds 参加CocoaChina翻译活动时所译   编者提示：这篇文章由Eugene Trapeznikov贡献。想象一下，你已经完成了您的应用程序的开发和测试，你现在准备提交生产版本。问题是，一些web服务的url指向测试服务器，同时API密钥被配置用于测试环">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/2016/04/10/如何使用Xcode的Targets来管理开发和生产构建/cocoachina_1.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/10/如何使用Xcode的Targets来管理开发和生产构建/cocoachina_2.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/10/如何使用Xcode的Targets来管理开发和生产构建/cocoachina_3.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/10/如何使用Xcode的Targets来管理开发和生产构建/cocoachina_4.jpg">
+<meta property="og:image" content="http://yoursite.com/2016/04/10/如何使用Xcode的Targets来管理开发和生产构建/cocoachina_5.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/10/如何使用Xcode的Targets来管理开发和生产构建/cocoachina_6.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/10/如何使用Xcode的Targets来管理开发和生产构建/cocoachina_7.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/10/如何使用Xcode的Targets来管理开发和生产构建/cocoachina_8.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/10/如何使用Xcode的Targets来管理开发和生产构建/cocoachina_9.png">
+<meta property="og:image" content="http://yoursite.com/2016/04/10/如何使用Xcode的Targets来管理开发和生产构建/cocoachina_10.png">
+<meta property="og:updated_time" content="2018-12-08T14:54:32.998Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何使用Xcode的Targets来管理开发和生产构建">
+<meta name="twitter:description" content="原文：How to Use Xcode Targets to Manage Development and Production Builds 参加CocoaChina翻译活动时所译   编者提示：这篇文章由Eugene Trapeznikov贡献。想象一下，你已经完成了您的应用程序的开发和测试，你现在准备提交生产版本。问题是，一些web服务的url指向测试服务器，同时API密钥被配置用于测试环">
+<meta name="twitter:image" content="http://yoursite.com/2016/04/10/如何使用Xcode的Targets来管理开发和生产构建/cocoachina_1.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/04/10/如何使用Xcode的Targets来管理开发和生产构建/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>如何使用Xcode的Targets来管理开发和生产构建 | OceanOver's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">OceanOver's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+      
+        <p class="site-subtitle">个人博客</p>
+      
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/04/10/如何使用Xcode的Targets来管理开发和生产构建/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="OceanOver">
+      <meta itemprop="description" content="个人博客，记录学习历程">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="OceanOver's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">如何使用Xcode的Targets来管理开发和生产构建
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2016-04-10 10:43:32" itemprop="dateCreated datePublished" datetime="2016-04-10T10:43:32+00:00">2016-04-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-12-08 14:54:32" itemprop="dateModified" datetime="2018-12-08T14:54:32+00:00">2018-12-08</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <ul>
+<li>原文：<a href="https://guides.cocoapods.org/" target="_blank" rel="noopener"><strong>How to Use Xcode Targets to Manage Development and Production Builds</strong></a></li>
+<li>参加<a href="http://www.cocoachina.com/ios/20160331/15832.html" target="_blank" rel="noopener">CocoaChina</a>翻译活动时所译</li>
+</ul>
+<hr>
+<p>编者提示：这篇文章由Eugene Trapeznikov贡献。想象一下，你已经完成了您的应用程序的开发和测试，你现在准备提交生产版本。问题是，一些web服务的url指向测试服务器，同时API密钥被配置用于测试环境。在提交app给苹果审核前，你需要修改所有这些API密钥和URL适应生产版本。这听起来不错，对吧？但是相较于在开发和生产环境之间来回切换，有没有更好的方法来处理开发和生产的构建？这正是接下来Eugene要和你们讨论的。<br><a id="more"></a></p>
+<h3 id="进入Eugene的教程"><a href="#进入Eugene的教程" class="headerlink" title="进入Eugene的教程"></a>进入Eugene的教程</h3><p>对于初学者来说，有些人可能会奇怪，为什么你需要使用两个单独的数据库和环境同时开发应用程序。原因是当你继续构建新的功能特性或继续开发你的应用，你希望区分开现有的公开版本和开发版本。标准的软件开发实践是在不同的开发环境下开发不同版本的软件，像我们案例中讲到的开发iphone应用。开发版本的应用程序通常使用一个不同的不同于生产环境的数据库(或如分析的其他系统)。这就是为什么我们应该为不同的环境中使用单独的服务器和数据库。开发人员在测试期间通常都使用虚拟图像或虚拟数据。在测试环境中，使用诸如 “test comment”, “argharghargh” 和 “one more test comment”之类的测试数据并不少见。显然，你不希望你的真实用户看到这样的消息。如果你的应用程序使用了一个分析系统的情况下，你甚至会在测试阶段发送成千上万的事件。同样的,你不会把测试数据和生产数据放在同一个数据库中。这就是为什么总是推荐区分开发和生产环境。</p>
+<p>在使用两个独立的环境时，你的应用程序需要有一个办法，找出它应该连接到的环境。一种常用的方法是在你的主应用代理里定义一个全局变量，将您的应用程序初始化为开发或生产模式。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">enum environmentType &#123;</span><br><span class="line">    case development, production</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">let environment:environmentType = .production</span><br><span class="line"> </span><br><span class="line">switch environment &#123;</span><br><span class="line">case .development:</span><br><span class="line">    // set web service URL to development</span><br><span class="line">    // set API keys to development</span><br><span class="line">    print(&quot;It&apos;s for development&quot;)</span><br><span class="line">case .production:</span><br><span class="line">    // set web service URL to production</span><br><span class="line">    // set API keys to production</span><br><span class="line">    print(&quot;It&apos;s for production&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种方法需要你每次切换环境时改变全局变量。虽然这种方法也许快捷，方便，但是它有一些重要的限制。首先，因为我们在开发和生产两个环境中使用一个Bundle ID，你不能在一台设备上安装这两个版本的应用。当你需要要测试开发版本的应用程序,同时仍在该设备上使用生产版本的应用，这就变的不方便了。此外，这种方法很有可能将开发版本的应用上传到应用商店。如果你忘记了改变这个全局变量，你将会上传错误的应用给你的用户。我记得有一次在提交应用程序到应用商店之前我忘记改变全局变量，用户获取到开发版本的应用。这是可怕的。</p>
+<p>在这篇文章中，我将向你们展示一个更好的方法来区分开发和生产构建。具体而言，我们将在Xcode中创建一个开发的target。这种方法法适用于新的和现有的大型项目，所以你可以用一个现有的应用程序对照本教程。</p>
+<p>通过应用这种方法,生产和开发版本的应用程序将具有相同的基础代码，但可以有不同的图标,bundle ID 和指向不同的数据库。发布和提交过程将会非常简单。最重要的是,你的测试人员和经理可以在同一设备上安装两个版本的应用程序,所以他们完全知道他们在尝试哪个版本。</p>
+<h3 id="如何创建一个新的Target"><a href="#如何创建一个新的Target" class="headerlink" title="如何创建一个新的Target"></a>如何创建一个新的Target</h3><p>所以你如何在Xcode中创建一个开发的target?我使用示例项目“todo”引导您一步一步完成整个过程。。您也可以使用自己的项目并按照步骤:</p>
+<ol>
+<li><p>在项目的导航面板进入项目设置。在Targets区域下，右键单击现有目标并选择 <code>Duplicate</code> 复制现有的目标。<br><img src="./cocoachina_1.png" width="800" height="400" align="center"><br><br><br><br></p>
+</li>
+<li><p>Xcode会询问你新的target是否是为iPad开发。对于本教程,我们只是选择“Duplicate Only”。<br><img src="./cocoachina_2.png" width="800" height="300" align="center"><br><code>提示：如果您的项目支持通用设备,Xcode不会提示上述消息。</code><br><br><br><br></p>
+</li>
+<li><p>现在我们有一个名为<code>todo copy</code>的新的target和build scheme。让我们重命名它使它更容易理解。</p>
+<ul>
+<li>在Targets列表中选择新的target。 按Enter键来编辑文本,添加一个更合适的名字。我更倾向于 “todo Dev”. 你自由选择任何你喜欢的名字。</li>
+<li>接下来，转到“Manage Schemes…”, 选择您在步骤1中创建的shceme,并按“输入”。 使scheme的名称和新的target的名称相同(这是一个对于新的target的选择)<br><img src="./cocoachina_3.png" width="800" height="360" align="center"><br><br><br><br></li>
+</ul>
+</li>
+<li><p>步骤4是可选的,但强烈推荐。如果你想简单地区分开发和生产构建，你应该为每个版本使用单独的图标和启动页。这将使你的测试人员更清晰的知道正在使用哪个app,防止你上传开发版本。😃</p>
+<p> 跳到 <code>Assets.xcassets</code> 添加一个新的图标。右击图标 &gt; <strong>App Icons &amp; Launch Images</strong> &gt; <strong>New iOS App Icon</strong>. 新图标重命名为“AppIcon-Dev”同时添加自己的图片。<br><img src="./cocoachina_4.jpg" width="800" height="500" align="center"><br><br><br><br></p>
+</li>
+<li><p>现在回到项目设置,选择您的开发target改变bundle identifier。你可以简单地将“Dev”追加到原来的ID上。如果执行了步骤4，请确保更改应用app icon，设置为在上一步中创建的。<br><img src="./cocoachina_5.png" width="800" height="500" align="center"><br><br><br><br></p>
+</li>
+<li><p>Xcode 自动为你的target添加plist文件(如todo copy-Info.plist)。你可以在项目的根文件夹找到它。将它从“copy”重命名为“Dev”,并将它放在原始的plist文件下。这里你将更容易管理文件。</p>
+</li>
+<li><p>现在打开你开发target的“Build Settings”，滚动到“Packaging”，并将值改为开发的plist文件（todo Dev.plist）。<br><img src="./cocoachina_6.png" width="800" height="400" align="center"><br><br><br><br></p>
+</li>
+<li><p>最后，我们会为生产和开发target配置预处理宏/编译器标识。之后我们就可以使用该标识在我们的代码来检测应用程序正在运行的版本。</p>
+</li>
+</ol>
+<p>对于Objective-C的项目，去到<code>Build Settings</code>下Apple <code>LLVM 7.0 - Preprocessing</code>。拓展<code>Preprocessor Macros</code>在Rebug和Release区域添加一个变量。对于开发target（即todo Dev），将该值设置为<code>DEVELOPMENT = 1</code>。另一个，将值设为<code>DEVELOPMENT=0</code>来表示生产版本。<br><img src="./cocoachina_7.png" width="800" height="310" align="center"><br><br><br><br><img src="./cocoachina_8.png" width="800" height="310" align="center"><br><br></p>
+<p>对于swift的项目，编译器不再支持预处理指令。作为替代，它使用编译时的属性和build配置。选中开发target，添加一个标识表示开发版本。去到<code>Build Setting</code>往下滚动到<code>Swift Compiler - Custom Flags</code>部分。将值设为<code>-DDEVELOPMENT</code>表示这个target作为开发版本。<br><br><br><br></p>
+<p><img src="./cocoachina_9.png" width="800" height="300" align="center"><br><br><br>现在，您已经创建并配置了开发target，下一步呢？</p>
+<h3 id="使用Target和宏"><a href="#使用Target和宏" class="headerlink" title="使用Target和宏"></a>使用Target和宏</h3><p>根据已配置的宏DEV_VERSION，我们可以在代码中利用它动态地编译项目。下面是一个简单的例子：</p>
+<p><strong>Objective-C:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#if DEVELOPMENT</span><br><span class="line">#define SERVER_URL @&quot;http://dev.server.com/api/&quot;</span><br><span class="line">#define API_TOKEN @&quot;DI2023409jf90ew&quot;</span><br><span class="line">#else</span><br><span class="line">#define SERVER_URL @&quot;http://prod.server.com/api/&quot;</span><br><span class="line">#define API_TOKEN @&quot;71a629j0f090232&quot;</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>Objective-C中你可以使用<code>＃if</code>检查<code>DEVELOPMENT</code>的环境，并相应的设置URLs/ API密钥。</p>
+<p><strong>Swift:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#if DEVELOPMENT</span><br><span class="line">let SERVER_URL = &quot;http://dev.server.com/api/&quot;</span><br><span class="line">let API_TOKEN = &quot;DI2023409jf90ew&quot;</span><br><span class="line">#else</span><br><span class="line">let SERVER_URL = &quot;http://prod.server.com/api/&quot;</span><br><span class="line">let API_TOKEN = &quot;71a629j0f090232&quot;</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+<p>Swift中你仍然可以使用<code>#if</code>判定build的参数动态编译。然而，除了使用<code>#define</code>定义基本常量，在swift中我们也可以用<code>let</code>定义一个全局常量。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">提示:通常，你会把上面的代码放在app delegate中。但这最终是取决于你在哪里初始化应用程序设置。</span><br></pre></td></tr></table></figure>
+<p>现在，当您选择“todo Dev”scheme运行项目，你创建开发版本会自动将服务器的配置设置为开发环境。现在，您可以上传开发版本到TestFlight 或 HockeyApp供测试人员和管理人员来测试。</p>
+<p>接着如果你需要创建一个生产版本，您可以简单地选择”todo”scheme。不需要更改代码。</p>
+<h3 id="管理多个target的一些注意事项"><a href="#管理多个target的一些注意事项" class="headerlink" title="管理多个target的一些注意事项"></a>管理多个target的一些注意事项</h3><p>1.当你添加新的文件到项目中，不要忘记选择两个target，以保持你的代码同步在两个版本。<br><img src="./cocoachina_10.png" width="800" height="400" align="center"><br><br><br></p>
+<p>2.如果你使用的CocoaPods，不要忘了添加新的target到你的podfile中。您可以使用<code>link_with</code>指定多个target。您可以进一步细节请查阅的 <a href="https://guides.cocoapods.org/" target="_blank" rel="noopener"><strong>CocoaPods</strong></a> 文档。你的podfile看起来是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">source &apos;https://github.com/CocoaPods/Specs.git&apos;</span><br><span class="line">platform :ios, &apos;7.0&apos;</span><br><span class="line">workspace &apos;todo&apos;</span><br><span class="line">link_with &apos;todo&apos;, &apos;todo Dev&apos;</span><br><span class="line">pod &apos;Mixpanel&apos;</span><br><span class="line">pod &apos;AFNetworking&apos;</span><br></pre></td></tr></table></figure>
+<p>3.如果你使用持续集成系统，如 Travis CI 或Jenkins，别忘了配置两个target的build和deliver。</p>
+<p>你对这个教程有什么想法？如何管理你的开发和生产构建？给我留言评论分享您的想法。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+       
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/翻译/" rel="tag"># 翻译</a>
+          
+            <a href="/tags/技巧/" rel="tag"># 技巧</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/10/07/iOS中category添加属性/" rel="next" title="iOS中category添加属性">
+                <i class="fa fa-chevron-left"></i> iOS中category添加属性
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/04/23/iOS9和Xcode7中-Stack-Views-介绍/" rel="prev" title="iOS9和Xcode7中 Stack Views 介绍">
+                iOS9和Xcode7中 Stack Views 介绍 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">OceanOver</p>
+              <p class="site-description motion-element" itemprop="description">个人博客，记录学习历程</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">14</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#进入Eugene的教程"><span class="nav-number">1.</span> <span class="nav-text">进入Eugene的教程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何创建一个新的Target"><span class="nav-number">2.</span> <span class="nav-text">如何创建一个新的Target</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用Target和宏"><span class="nav-number">3.</span> <span class="nav-text">使用Target和宏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#管理多个target的一些注意事项"><span class="nav-number">4.</span> <span class="nav-text">管理多个target的一些注意事项</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">OceanOver</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v6.6.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.6.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.6.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.6.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.6.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.6.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.6.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
