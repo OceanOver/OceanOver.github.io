@@ -1,0 +1,31 @@
+# language
+language: node_js
+# version
+node_js: stable
+# branches
+branches:
+  only:
+    - master
+
+cache:
+  directories:
+    - node_modules
+
+# lifecycle
+before_install:
+  - npm install -g hexo-cli
+
+install:
+  - npm i
+
+script:
+  - hexo clean
+  - hexo generate
+
+after_success:
+  - cd ./public
+  - git init
+  - git add --all .
+  - git commit -m "Travis CI Auto Builder"
+  # 这里的 REPO_TOKEN 即之前在 travis 项目的环境变量里添加的
+  - git push --quiet --force https://$REPO_TOKEN@github.com/OceanOver/OceanOver.github.io.git master
